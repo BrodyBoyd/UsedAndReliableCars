@@ -1,24 +1,24 @@
 ﻿@model UsedCar
 @{
-    ViewData["Title"] = "TrustRide - Find the cheapest and most reliable used cars near you!";
+    ViewData["Title"] = "AutoGems.ai - Find the cheapest and most reliable used cars near you!";
 }
 <div class="">
 
     <!-- Hero -->
-    <div class="relative w-full  flex items-center justify-center overflow-hidden bg-gray-50 pt-32 bg-gray-200 car-Background ">
+    <div class="car-Background bg-gray-50pt-32 relative flex w-full items-center justify-center overflow-hidden">
         <div class="absolute inset-0 bg-black/40 backdrop-blur-xs"></div>
 
 
-        <div class="container mx-auto grid lg:grid-cols-2 gap-12 items-center px-4 py-16 md:py-32 md:px-10 lg:px-32 xl:max-w-6xl z-10">
+        <div class="z-10 container mx-auto grid items-center gap-12 px-4 py-16 md:px-10 md:py-32 lg:grid-cols-2 lg:px-32 xl:max-w-6xl">
 
             
             <!-- LEFT SIDE (Form) -->
-            <div id="bottomSection" class="order-2 lg:order-1 bg-white shadow-xl rounded-2xl px-10 py-14">
+            <div id="bottomSection" class="order-2 rounded-2xl bg-white px-10 py-14 shadow-xl lg:order-1">
                 <h1 class="text-4xl font-extrabold text-gray-900">
                     Find Your Car!
                 </h1>
 
-                <p class="mt-6 text-gray-600 leading-relaxed">
+                <p class="mt-6 leading-relaxed text-gray-600">
                     <span class="font-semibold text-gray-900">You want the best!</span>
                     We want that for you as well. No more guessing whether that car is right for you.
                     Let us help you find the perfect used and reliable car within your budget.
@@ -26,10 +26,10 @@
                 </p>
                 <div class="flex">
                     <a href="https://www.consumerreports.org/cars/best-used-cars-10-top-picks-a8027733372/#used-car-top-picks-under-10000" target="_blank">
-                        <img src="~/images/ConsumerReportLogo.png"  alt="Consumer Reports Logo" class="h-12 mt-4 cursor-pointer" />
+                        <img src="~/images/ConsumerReportLogo.png"  alt="Consumer Reports Logo" class="mt-4 h-12 cursor-pointer" />
                     </a>
                     <a href="https://www.ramseysolutions.com/insurance/new-car-vs-used-car" target="_blank">
-                        <img src="~/images/RamseyLogo.jpg" alt="Dave Ramsey Logo" class="h-12 mt-4 cursor-pointer" />
+                        <img src="~/images/RamseyLogo.jpg" alt="Dave Ramsey Logo" class="mt-4 h-12 cursor-pointer" />
                     </a>
                 </div>
 
@@ -43,18 +43,18 @@
                     @foreach (var group in grouped)
                     {
                         var id = $"group_{group.Key}";
-                        <div class="mb-6 border rounded-lg overflow-hidden">
+                        <div class="mb-6 overflow-hidden rounded-lg border">
 
                             <!-- Accordion Header -->
                             <button type="button"
-                                    class="w-full flex justify-between items-center px-4 py-3 bg-gray-100 hover:bg-gray-200 transition"
+                                    class="flex w-full items-center justify-between bg-gray-100 px-4 py-3 transition hover:bg-gray-200"
                                     onclick="toggleAccordion('@id')">
 
                                 <span class="text-lg font-semibold text-gray-800">
                                     Under $@group.Key.ToString("N0")
                                 </span>
 
-                                <svg class="w-5 h-5 text-gray-600 transition-transform"
+                                <svg class="h-5 w-5 text-gray-600 transition-transform"
                                      fill="none" stroke="currentColor" stroke-width="2"
                                      viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -63,11 +63,11 @@
                             </button>
 
                             <!-- Accordion Content -->
-                            <div id="@id" class="max-h-0 overflow-hidden transition-all duration-300 bg-white">
-                                <div class="p-4 space-y-3">
+                            <div id="@id" class="max-h-0 overflow-hidden bg-white transition-all duration-300">
+                                <div class="space-y-3 p-4">
                                     @foreach (var car in group)
                                     {
-                                        <label class="flex items-center gap-3 p-3 rounded-lg border cursor-pointer hover:bg-gray-50">
+                                        <label class="flex cursor-pointer items-center gap-3 rounded-lg border p-3 hover:bg-gray-50">
                                             <input type="checkbox"
                                                    value="@car.Model"
                                                    class="h-4 w-4 border-gray-300 focus:ring-2 focus:ring-blue-300" />
@@ -85,25 +85,25 @@
                 </form>
             </div>
             <!-- RIGHT SIDE (Heading + Buttons) -->
-            <div class="order-1 lg:order-2 text-center lg:text-left">
-                <h1 class="text-4xl sm:text-5xl font-extrabold leading-tight text-white drop-shadow-lg">
-                    TrustRide
+            <div class="order-1 text-center lg:order-2 lg:text-left">
+                <h1 class="text-4xl leading-tight font-extrabold text-white drop-shadow-lg sm:text-5xl">
+                    AutoGems.ai
                 </h1>
 
                 <p class="mt-8 mb-12 text-lg text-gray-100 drop-shadow-md">
                     Find used and reliable cars near you!
                 </p>
 
-                <div class="flex flex-wrap lg:justify-start justify-center gap-4">
+                <div class="flex flex-wrap justify-center gap-4 lg:justify-start">
                     <button id="scrollBtn"
-                            class="px-8 py-3 text-lg font-semibold rounded bg-[var(--electric)] text-[var(--dark)]
-                       hover:shadow-[0_10px_20px_-10px_black] hover:scale-105 transition-transform">
+                            class="rounded bg-[var(--electric)] px-8 py-3 text-lg font-semibold text-[var(--dark)]
+                       transition-transform hover:scale-105 hover:shadow-[0_10px_20px_-10px_black]">
                         Find My Next Car!
                     </button>
 
                     <a href="#"
-                       class="px-8 py-3 text-lg border rounded text-white border-white
-                      hover:bg-white hover:text-black transition-colors">
+                       class="rounded border border-white px-8 py-3 text-lg text-white
+                      transition-colors hover:bg-white hover:text-black">
                         About our Service
                     </a>
                 </div>
@@ -113,49 +113,49 @@
         </div>
 
 
-        <div class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-b from-transparent to-white pointer-events-none"></div>
+        <div class="pointer-events-none absolute bottom-0 left-0 h-32 w-full bg-gradient-to-b from-transparent to-white"></div>
 
     </div>
 
 
     <!-- Feature Strip -->
-    <section class="w-full bg-white py-16 px-8">
-        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
+    <section class="w-full bg-white px-8 py-16">
+        <div class="mx-auto grid max-w-6xl grid-cols-1 gap-10 text-center md:grid-cols-3">
             <div>
-                <h3 class="text-2xl font-bold mb-2">Fast</h3>
+                <h3 class="mb-2 text-2xl font-bold">Fast</h3>
                 <p class="text-gray-600">Find hundreds of used cars at the click of a button</p>
             </div>
             <div>
-                <h3 class="text-2xl font-bold mb-2">Accurate</h3>
+                <h3 class="mb-2 text-2xl font-bold">Accurate</h3>
                 <p class="text-gray-600">Find exactly what you're searching for</p>
             </div>
             <div>
-                <h3 class="text-2xl font-bold mb-2">Only The Best</h3>
+                <h3 class="mb-2 text-2xl font-bold">Only The Best</h3>
                 <p class="text-gray-600">We do our research so that you will only find the best used cars</p>
             </div>
         </div>
     </section>
 
     @* ai section *@
-    <section class="relative flex w-screen line-bg py-16 px-8 justify-center min-h-screen">
+    <section class="line-bg relative flex min-h-screen w-screen justify-center px-8 py-16">
 
         <!-- Top fade (into previous section) -->
-        <div class="absolute top-0 left-0 w-full h-32
-                bg-gradient-to-t from-transparent to-white
-                pointer-events-none"></div>
+        <div class="pointer-events-none absolute top-0 left-0 h-32
+                w-full bg-gradient-to-t from-transparent
+                to-white"></div>
 
         <!-- Bottom fade (into next section) -->
-        <div class="absolute bottom-0 left-0 w-full h-32
-                bg-gradient-to-b from-transparent to-white
-                pointer-events-none"></div> 
+        <div class="pointer-events-none absolute bottom-0 left-0 h-32
+                w-full bg-gradient-to-b from-transparent
+                to-white"></div> 
 
         <div class="max-w-8xl mx-auto gap-10 text-center transition">
             <div>
-                <h3 class="text-2xl font-bold mb-2 text-white">AI Integration</h3>
+                <h3 class="mb-2 text-2xl font-bold text-white">AI Integration</h3>
                 <p class="text-gray-200">Ask our ai for help finding the car that fits your exact needs (Coming Soon)</p>
 
                 <div id="askAiButton"
-                     class="outer-cont flex items-center gap-2 cursor-pointer duration-500 transform">
+                     class="outer-cont flex transform cursor-pointer items-center gap-2 duration-500">
 
                     <!-- SVG unchanged -->
                     <svg viewBox="0 0 24 24" height="24" width="24" xmlns="http://www.w3.org/2000/svg">
@@ -171,7 +171,7 @@
         </div>
 
         <div id="aiChatbox"
-             class="hidden opacity-0 translate-y-4 transition-all duration-500 w-[60%] mx-auto mt-10">
+             class="mx-auto mt-10 hidden w-[60%] translate-y-4 opacity-0 transition-all duration-500">
             <div class="card">
                 <div class="chat-header">Chat</div>
                 <div class="chat-window">
@@ -189,16 +189,16 @@
     </section>
 
     @* Search Section
-    <section id="bottomSection" class="py-20 bg-gray-50">
+    <section id="bottomSection" class="bg-gray-50 py-20">
         <div class="container mx-auto grid gap-10 lg:grid-cols-2 xl:grid-cols-5">
 
             <!-- Left Card -->
-            <div class="xl:col-span-2 bg-white shadow-xl rounded-2xl px-10 py-14">
+            <div class="rounded-2xl bg-white px-10 py-14 shadow-xl xl:col-span-2">
                 <h1 class="text-4xl font-extrabold text-gray-900">
                     Find Your Car!
                 </h1>
 
-                <p class="mt-6 text-gray-600 leading-relaxed">
+                <p class="mt-6 leading-relaxed text-gray-600">
                     <span class="font-semibold text-gray-900">You want the best!</span>
                     We want that for you as well. No more guessing whether that car is right for you.
                     Let us help you find the perfect used and reliable car within your budget.  
@@ -216,7 +216,7 @@
                     {
                         <div class="mb-10">
                             <!-- Price Category Header -->
-                            <h2 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">
+                            <h2 class="mb-4 border-b pb-2 text-xl font-bold text-gray-800">
                                 Under $@group.Key.ToString("N0")
                             </h2>
 
@@ -224,7 +224,7 @@
                             <div class="space-y-3">
                                 @foreach (var car in group)
                                 {
-                                    <label class="flex items-center gap-3 p-3 rounded-lg border cursor-pointer hover:bg-gray-50">
+                                    <label class="flex cursor-pointer items-center gap-3 rounded-lg border p-3 hover:bg-gray-50">
                                         <input type="checkbox"
                                                value="@car.Model"
                                                class="h-4 w-4 border-gray-300 focus:ring-2 focus:ring-blue-300" />
@@ -240,8 +240,8 @@
 
                     <!-- Button -->
                     <button type="button"
-                            class="w-full py-3 rounded-lg bg-[var(--electric)] text-white font-semibold
-                               hover:bg-violet-700 transition shadow-md">
+                            class="w-full rounded-lg bg-[var(--electric)] py-3 font-semibold text-white
+                               shadow-md transition hover:bg-violet-700">
                         Search Nearby
                     </button>
 
@@ -249,8 +249,8 @@
             </div>
 
             <!-- Results Panel -->
-            <div class="xl:col-span-3 bg-white shadow-xl rounded-2xl p-10 text-gray-700">
-                <h2 class="text-2xl font-bold mb-4">Results</h2>
+            <div class="rounded-2xl bg-white p-10 text-gray-700 shadow-xl xl:col-span-3">
+                <h2 class="mb-4 text-2xl font-bold">Results</h2>
                 <p class="text-gray-500">Your search results will appear here...</p>
             </div>
 

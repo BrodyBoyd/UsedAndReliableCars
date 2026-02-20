@@ -1,8 +1,17 @@
 var builder = WebApplication.CreateBuilder(args);
+// Register MVC (covers both MVC and Web API controllers)
 builder.Services.AddControllersWithViews();
+
+// Register HttpClient for Dependency Injection
+builder.Services.AddHttpClient();
+
 var app = builder.Build();
-app.MapStaticAssets();
+
+app.UseStaticFiles();    // Serve files from wwwroot
+app.UseRouting();
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
 app.Run();
