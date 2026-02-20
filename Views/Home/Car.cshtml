@@ -1,4 +1,4 @@
-@model UsedAndReliableCars.Models.CarSearchResultViewModel
+﻿@model UsedAndReliableCars.Models.CarSearchResultViewModel
 @{
     ViewData["Title"] = "TrustRide - Search Results";
 }
@@ -44,7 +44,6 @@
                 </a>
             </div>
         }
-        <!-- Empty state -->
         else if (Model.Listings == null || Model.Listings.Count == 0)
         {
             <div class="mt-6 rounded-2xl border bg-gray-50 px-10 py-16 text-center shadow-md">
@@ -58,9 +57,7 @@
                 </a>
             </div>
         }
-        <!-- Results grid -->
-        else
-        {
+        else{
             <div class="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 @foreach (var listing in Model.Listings)
                 {
@@ -82,7 +79,7 @@
                         <div class="flex flex-1 flex-col p-6">
 
                             <!-- Title -->
-                            <h2 class="text-lg font-bold leading-snug text-gray-900">
+                            <h2 class="text-lg leading-snug font-bold text-gray-900">
                                 @(listing.Heading ?? $"{listing.Year} {listing.Make} {listing.Model}")
                             </h2>
 
