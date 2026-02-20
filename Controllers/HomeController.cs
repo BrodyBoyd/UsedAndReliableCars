@@ -106,6 +106,15 @@ namespace UsedAndReliableCars.Controllers
 
             return View(model);
         }
+        public IActionResult About()
+        {
+            return View();
+        }
+        public IActionResult Contact()
+        {
+
+            return View();
+        }
 
         [HttpGet]
         public async Task<IActionResult> FindCars( string? selectedCar, string? year, string? make, string? zip, CancellationToken cancellationToken )
