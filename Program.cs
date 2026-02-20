@@ -1,13 +1,16 @@
+using UsedAndReliableCars.Services;
+
 var builder = WebApplication.CreateBuilder(args);
+
 // Register MVC (covers both MVC and Web API controllers)
 builder.Services.AddControllersWithViews();
 
-// Register HttpClient for Dependency Injection
-builder.Services.AddHttpClient();
+// Register MarketCheckApiService as a typed HttpClient
+builder.Services.AddHttpClient<IMarketCheckApiService, MarketCheckApiService>();
 
 var app = builder.Build();
 
-app.UseStaticFiles();    // Serve files from wwwroot
+app.UseStaticFiles();   // Serve files from wwwroot
 app.UseRouting();
 
 app.MapControllerRoute(

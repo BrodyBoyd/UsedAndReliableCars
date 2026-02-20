@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace UsedAndReliableCars.Services;
 
-public class MarketCheckApiService /*: IMarketCheckApiService*/
+public class MarketCheckApiService : IMarketCheckApiService
 {
     private const string BaseUrl = "https://api.marketcheck.com";
     private readonly HttpClient _httpClient;
@@ -32,18 +32,21 @@ public class MarketCheckApiService /*: IMarketCheckApiService*/
         return "?" + string.Join("&", pairs.Select(p => $"{Uri.EscapeDataString(p.Key)}={Uri.EscapeDataString(p.Value)}"));
     }
 
-    private async Task<HttpResponseMessage> GetAsync( string path, IReadOnlyDictionary<string, string>? queryParams, CancellationToken cancellationToken )
+    private Task<HttpResponseMessage> GetAsync(string path, IReadOnlyDictionary<string, string>? queryParams = null, CancellationToken cancellationToken = default)
     {
+        // Build the query (includes api_key)
         var query = BuildQuery(queryParams, _apiKey);
-        return await _httpClient.GetAsync(path + query, cancellationToken).ConfigureAwait(false);
+        // Combine path and query to form the request URI (relative to BaseAddress)
+        var requestUri = path + query;
+        return _httpClient.GetAsync(requestUri, cancellationToken);
     }
 
-    private Task<HttpResponseMessage> GetByIdAsync( string path, string id, CancellationToken cancellationToken )
-    {
-        var query = BuildQuery(null, _apiKey);
-        return _httpClient.GetAsync($"{path}/{Uri.EscapeDataString(id)}{query}", cancellationToken);
-    }
+    public Task<HttpResponseMessage> SearchActiveAsync( IReadOnlyDictionary<string, string>? queryParams = null, CancellationToken cancellationToken = default )
+        => GetAsync("/v2/search/car/active", queryParams, cancellationToken);
 
     public Task<HttpResponseMessage> SearchFsboActiveAsync( IReadOnlyDictionary<string, string>? queryParams = null, CancellationToken cancellationToken = default )
-       => GetAsync("/v2/search/car/fsbo/active", queryParams, cancellationToken);
+        => GetAsync("/v2/search/car/fsbo/active", queryParams, cancellationToken);
+
+    public Task<HttpResponseMessage> GetHistoryByVinAsync( string vin, IReadOnlyDictionary<string, string>? queryParams = null, CancellationToken cancellationToken = default )
+        => GetAsync("/v2/history/car/" + Uri.EscapeDataString(vin), queryParams, cancellationToken);
 }

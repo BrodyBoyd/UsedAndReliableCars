@@ -1,89 +1,164 @@
-@model UsedCar
+@model UsedAndReliableCars.Models.CarSearchResultViewModel
 @{
-    ViewData["Title"] = "AutoGems.ai - Browse Cars";
+    ViewData["Title"] = "TrustRide - Search Results";
 }
 
-<div class="min-h-full bg-gray-50 pt-24 pb-20">
-    <div class="container mx-auto px-4 xl:max-w-4xl">
-
-        <h1 class="mb-2 text-4xl font-extrabold text-gray-900">Browse Cars</h1>
-        <p class="mb-10 text-gray-600">
-            All available cars grouped by price category. Check the ones you're interested in,
-            then hit <span class="font-semibold text-gray-900">Search Nearby</span> to find listings near you.
-        </p>
-
-        <form class="space-y-5">
-            @{
-                var grouped = Model.UsedCars
-                    .GroupBy(c => c.PriceCategory)
-                    .OrderBy(g => g.Key);
-            }
-
-            @foreach (var group in grouped)
+<!-- Hero Banner -->
+<div class="car-Background relative flex w-full items-center justify-center overflow-hidden pt-25 pb-32">
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-xs"></div>
+    <div class="z-10 px-4 text-center">
+        <h1 class="text-5xl font-extrabold text-white drop-shadow-lg">Search Results</h1>
+        <p class="mt-4 text-lg text-gray-200">
+            @if (Model.TotalFound > 0)
             {
-                var id = $"group_{group.Key}";
-                <div class="mb-4 overflow-hidden rounded-lg border bg-white shadow-sm">
-
-                    <!-- Accordion Header -->
-                    <button type="button"
-                            class="flex w-full items-center justify-between bg-gray-100 px-4 py-3 transition hover:bg-gray-200"
-                            onclick="toggleAccordion('@id')">
-                        <span class="text-lg font-semibold text-gray-800">
-                            Under $@String.Format("{0:N0}", group.Key)
-                        </span>
-                        <svg id="@(id)_icon"
-                             class="h-5 w-5 text-gray-600 transition-transform duration-300"
-                             fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
-
-                    <!-- Accordion Content -->
-                    <div id="@id" class="max-h-0 overflow-hidden bg-white transition-all duration-300">
-                        <div class="space-y-3 p-4">
-                            @foreach (var car in group)
-                            {
-                                <div class="flex items-center gap-3 rounded-lg border p-3 hover:bg-gray-50">
-                                    <input type="checkbox"
-                                           value="@car.Model"
-                                           class="h-4 w-4 shrink-0 border-gray-300 focus:ring-2 focus:ring-blue-300" />
-                                    <div class="flex flex-col">
-                                        <a asp-controller="Home" asp-action="CarModel"
-                                           asp-route-make="@car.Make" asp-route-model="@car.Model"
-                                           class="text-sm font-semibold text-blue-600 hover:underline">
-                                            @car.Make @car.Model (@car.Year)
-                                        </a>
-                                        <span class="text-xs text-gray-500">@car.Type &mdash; Under $@String.Format("{0:N0}", car.PriceCategory)</span>
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                    </div>
-
-                </div>
+                <span>Found @Model.TotalFound listing@(Model.TotalFound == 1 ? "" : "s") near you</span>
             }
-
-            <button type="button"
-                    class="mt-4 w-full rounded-lg bg-[var(--electric)] py-3 font-semibold text-white
-                           shadow-md transition hover:bg-violet-700">
-                Search Nearby
-            </button>
-        </form>
-
+            else if (Model.ErrorMessage == null)
+            {
+                <span>No listings found — try adjusting your search</span>
+            }
+        </p>
     </div>
+    <div class="pointer-events-none absolute bottom-0 left-0 h-32 w-full bg-gradient-to-b from-transparent to-white"></div>
 </div>
 
-<script>
-    function toggleAccordion(id) {
-        const content = document.getElementById(id);
-        const icon = document.getElementById(id + "_icon");
+<section class="bg-white px-8 py-16">
+    <div class="mx-auto max-w-6xl">
 
-        if (content.style.maxHeight) {
-            content.style.maxHeight = null;
-            icon.style.transform = "rotate(0deg)";
-        } else {
-            content.style.maxHeight = content.scrollHeight + "px";
-            icon.style.transform = "rotate(180deg)";
+        <!-- Back link -->
+        <a asp-controller="Home" asp-action="Index"
+           class="mb-8 inline-flex items-center gap-2 text-sm font-semibold text-gray-500 hover:text-gray-900">
+            ← Back to Search
+        </a>
+
+        <!-- Error state -->
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="mt-6 rounded-2xl border border-red-200 bg-red-50 px-10 py-10 text-center shadow-md">
+                <div class="mb-3 text-4xl">⚠️</div>
+                <p class="text-lg font-semibold text-red-700">@Model.ErrorMessage</p>
+                <a asp-controller="Home" asp-action="Index"
+                   class="mt-6 inline-block rounded-lg bg-[var(--electric)] px-8 py-3 font-semibold
+                          text-[var(--dark)] shadow-md transition hover:shadow-lg">
+                    Try Again
+                </a>
+            </div>
         }
-    }
-</script>
+        <!-- Empty state -->
+        else if (Model.Listings == null || Model.Listings.Count == 0)
+        {
+            <div class="mt-6 rounded-2xl border bg-gray-50 px-10 py-16 text-center shadow-md">
+                <div class="mb-3 text-4xl">🔍</div>
+                <p class="text-xl font-bold text-gray-800">No listings found</p>
+                <p class="mt-2 text-gray-500">Try a different car or a broader zip code.</p>
+                <a asp-controller="Home" asp-action="Index"
+                   class="mt-6 inline-block rounded-lg bg-[var(--electric)] px-8 py-3 font-semibold
+                          text-[var(--dark)] shadow-md transition hover:shadow-lg">
+                    Search Again
+                </a>
+            </div>
+        }
+        <!-- Results grid -->
+        else
+        {
+            <div class="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                @foreach (var listing in Model.Listings)
+                {
+                    var trend = listing.Vin != null && Model.PriceTrendByVin.TryGetValue(listing.Vin, out var t) ? t : null;
+
+                    <div class="flex flex-col overflow-hidden rounded-2xl border bg-white shadow-md transition hover:shadow-xl">
+
+                        <!-- Photo -->
+                        @if (listing.FirstPhoto != null)
+                        {
+                            <img src="@listing.FirstPhoto" alt="@listing.Heading"
+                                 class="h-48 w-full object-cover" loading="lazy" />
+                        }
+                        else
+                        {
+                            <div class="flex h-48 w-full items-center justify-center bg-gray-100 text-5xl">🚗</div>
+                        }
+
+                        <div class="flex flex-1 flex-col p-6">
+
+                            <!-- Title -->
+                            <h2 class="text-lg font-bold leading-snug text-gray-900">
+                                @(listing.Heading ?? $"{listing.Year} {listing.Make} {listing.Model}")
+                            </h2>
+
+                            <!-- Price + trend badge -->
+                            <div class="mt-2 flex items-center gap-3">
+                                <span class="text-2xl font-extrabold text-gray-900">
+                                    @(listing.Price.HasValue ? $"${listing.Price.Value:N0}" : "Price N/A")
+                                </span>
+
+                                @if (trend == "lower")
+                                {
+                                    <span class="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700"
+                                          title="Below historical average">
+                                        ↓ Good Deal
+                                    </span>
+                                }
+                                else if (trend == "higher")
+                                {
+                                    <span class="rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700"
+                                          title="Above historical average">
+                                        ↑ Above Avg
+                                    </span>
+                                }
+                            </div>
+
+                            <!-- Details -->
+                            <ul class="mt-4 space-y-1 text-sm text-gray-600">
+                                @if (listing.Miles.HasValue)
+                                {
+                                    <li>🛣️ <span class="font-medium">@listing.Miles.Value.ToString("N0") mi</span></li>
+                                }
+                                @if (!string.IsNullOrEmpty(listing.Trim))
+                                {
+                                    <li>⚙️ @listing.Trim</li>
+                                }
+                                @if (!string.IsNullOrEmpty(listing.ExteriorColor))
+                                {
+                                    <li>🎨 @listing.ExteriorColor</li>
+                                }
+                                @if (!string.IsNullOrEmpty(listing.City) || !string.IsNullOrEmpty(listing.State))
+                                {
+                                    <li>📍 @listing.City@(!string.IsNullOrEmpty(listing.City) && !string.IsNullOrEmpty(listing.State) ? ", " : "")@listing.State</li>
+                                }
+                                @if (!string.IsNullOrEmpty(listing.SellerName))
+                                {
+                                    <li>🏪 @listing.SellerName</li>
+                                }
+                            </ul>
+
+                            <!-- Action buttons -->
+                            <div class="mt-6 flex flex-wrap gap-3">
+                                @if (!string.IsNullOrEmpty(listing.VdpUrl))
+                                {
+                                    <a href="@listing.VdpUrl" target="_blank" rel="noopener noreferrer"
+                                       class="flex-1 rounded-lg bg-[var(--electric)] py-2 text-center text-sm
+                                              font-semibold text-[var(--dark)] shadow-sm transition hover:shadow-md">
+                                        View Listing
+                                    </a>
+                                }
+                                @if (!string.IsNullOrEmpty(listing.Vin))
+                                {
+                                    <a asp-controller="Home" asp-action="PriceHistory"
+                                       asp-route-vin="@listing.Vin"
+                                       asp-route-title="@(listing.Heading ?? $"{listing.Year} {listing.Make} {listing.Model}")"
+                                       class="flex-1 rounded-lg border border-gray-300 py-2 text-center text-sm
+                                              font-semibold text-gray-700 transition hover:bg-gray-100">
+                                        Price History
+                                    </a>
+                                }
+                            </div>
+
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+
+    </div>
+</section>
