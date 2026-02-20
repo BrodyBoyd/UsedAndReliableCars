@@ -277,13 +277,9 @@
 }
 
 /* AI BUTTON AND BACKGROUND CSS */
-.flex {
-    display: flex;
+.outer-cont {
     align-items: center;
     gap: 5px;
-}
-
-.outer-cont {
     padding: 12px 20px;
     border: none;
     font-size: 1rem;

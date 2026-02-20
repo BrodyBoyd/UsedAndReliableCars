@@ -1,0 +1,72 @@
+@model UsedCar
+@{
+    ViewData["Title"] = $"AutoGems.ai - {Model.Make} {Model.Model}";
+}
+
+<div class="min-h-full bg-gray-50 pt-24 pb-20">
+    <div class="container mx-auto px-4 xl:max-w-3xl">
+
+        <!-- Breadcrumb -->
+        <nav class="mb-6 text-sm text-gray-500">
+            <a asp-controller="Home" asp-action="Index" class="hover:underline">Home</a>
+            <span class="mx-2">/</span>
+            <a asp-controller="Home" asp-action="Car" class="hover:underline">Browse Cars</a>
+            <span class="mx-2">/</span>
+            <span class="font-semibold text-gray-800">@Model.Make @Model.Model</span>
+        </nav>
+
+        <!-- Detail Card -->
+        <div class="overflow-hidden rounded-2xl bg-white shadow-xl">
+
+            <!-- Card Header -->
+            <div class="bg-gray-100 px-10 py-8">
+                <h1 class="text-4xl font-extrabold text-gray-900">
+                    @Model.Make @Model.Model
+                </h1>
+                <p class="mt-1 text-lg text-gray-500">@Model.Year &mdash; @Model.Type</p>
+            </div>
+
+            <!-- Card Body -->
+            <div class="px-10 py-8">
+                <div class="grid grid-cols-2 gap-6 sm:grid-cols-4">
+
+                    <div class="rounded-lg border bg-gray-50 p-4 text-center">
+                        <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">Make</p>
+                        <p class="mt-1 text-xl font-bold text-gray-800">@Model.Make</p>
+                    </div>
+
+                    <div class="rounded-lg border bg-gray-50 p-4 text-center">
+                        <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">Model</p>
+                        <p class="mt-1 text-xl font-bold text-gray-800">@Model.Model</p>
+                    </div>
+
+                    <div class="rounded-lg border bg-gray-50 p-4 text-center">
+                        <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">Year</p>
+                        <p class="mt-1 text-xl font-bold text-gray-800">@Model.Year</p>
+                    </div>
+
+                    <div class="rounded-lg border bg-gray-50 p-4 text-center">
+                        <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">Budget</p>
+                        <p class="mt-1 text-xl font-bold text-gray-800">Under $@String.Format("{0:N0}", Model.PriceCategory)</p>
+                    </div>
+
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="mt-10 flex flex-wrap gap-4">
+                    <button type="button"
+                            class="rounded-lg bg-[var(--electric)] px-8 py-3 font-semibold text-white
+                                   shadow-md transition hover:bg-violet-700">
+                        Search Nearby
+                    </button>
+                    <a asp-controller="Home" asp-action="Car"
+                       class="rounded-lg border border-gray-300 px-8 py-3 font-semibold text-gray-700
+                              transition hover:bg-gray-100">
+                        ← Back to All Cars
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

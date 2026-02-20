@@ -1,0 +1,74 @@
+﻿@{
+    ViewData["Title"] = "AutoGems.ai - About Us";
+}
+
+<!-- Hero Banner — pt-16 clears the fixed navbar -->
+<div class="car-Background relative flex w-full items-center justify-center overflow-hidden pt-25 pb-32">
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-xs"></div>
+    <div class="z-10 px-4 text-center">
+        <h1 class="text-5xl font-extrabold text-white drop-shadow-lg">About AutoGems.ai</h1>
+        <p class="mt-4 text-lg text-gray-200">Helping everyday people find reliable used cars since 2024</p>
+    </div>
+    <div class="pointer-events-none absolute bottom-0 left-0 h-32 w-full bg-gradient-to-b from-transparent to-white"></div>
+</div>
+
+<!-- Mission Section -->
+<section class="bg-white px-8 py-20">
+    <div class="mx-auto max-w-4xl text-center">
+        <h2 class="mb-6 text-3xl font-extrabold text-gray-900">Our Mission</h2>
+        <p class="text-lg leading-relaxed text-gray-600">
+            At AutoGems.ai, we believe that buying a reliable used car shouldn't be a gamble.
+            We cut through the noise by curating only the vehicles recommended by trusted sources
+            like <span class="font-semibold text-gray-900">Consumer Reports</span> and
+            <span class="font-semibold text-gray-900">Dave Ramsey</span> — so you can shop with confidence,
+            not anxiety.
+        </p>
+    </div>
+</section>
+
+<!-- Values Strip -->
+<section class="bg-gray-50 px-8 py-20">
+    <div class="mx-auto grid max-w-6xl grid-cols-1 gap-10 md:grid-cols-3">
+
+        <div class="rounded-2xl bg-white p-10 text-center shadow-md">
+            <div class="mb-4 text-4xl">🔍</div>
+            <h3 class="mb-2 text-xl font-bold text-gray-900">Research-Backed</h3>
+            <p class="text-gray-600">Every car on our list is vetted by industry-leading consumer research so you only see the best.</p>
+        </div>
+
+        <div class="rounded-2xl bg-white p-10 text-center shadow-md">
+            <div class="mb-4 text-4xl">💰</div>
+            <h3 class="mb-2 text-xl font-bold text-gray-900">Budget-Friendly</h3>
+            <p class="text-gray-600">We organize picks by price category so you can find a great car that fits your actual budget.</p>
+        </div>
+
+        <div class="rounded-2xl bg-white p-10 text-center shadow-md">
+            <div class="mb-4 text-4xl">🤖</div>
+            <h3 class="mb-2 text-xl font-bold text-gray-900">AI-Powered (Soon)</h3>
+            <p class="text-gray-600">Our upcoming AI assistant will give personalized recommendations based on your unique needs.</p>
+        </div>
+
+    </div>
+</section>
+
+<!-- Story Section -->
+<section class="bg-white px-8 py-20">
+    <div class="mx-auto max-w-3xl text-center">
+        <h2 class="mb-6 text-3xl font-extrabold text-gray-900">Our Story</h2>
+        <p class="mb-6 text-lg leading-relaxed text-gray-600">
+            AutoGems.ai was born out of frustration. Like most people, we found the used car market overwhelming —
+            full of overpriced lemons, pushy dealerships, and conflicting advice. We decided to build something better:
+            a simple, honest tool that does the research for you.
+        </p>
+        <p class="text-lg leading-relaxed text-gray-600">
+            We're a small team of car enthusiasts and developers who are passionate about helping people make smart
+            financial decisions. We hope AutoGems saves you time, money, and a whole lot of stress.
+        </p>
+
+        <a asp-controller="Home" asp-action="Contact"
+           class="mt-10 inline-block rounded-lg bg-[var(--electric)] px-8 py-3 font-semibold text-white
+                  shadow-md transition hover:bg-violet-700">
+            Get in Touch
+        </a>
+    </div>
+</section>

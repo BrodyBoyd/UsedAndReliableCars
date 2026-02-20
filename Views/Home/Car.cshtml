@@ -1,0 +1,89 @@
+@model UsedCar
+@{
+    ViewData["Title"] = "AutoGems.ai - Browse Cars";
+}
+
+<div class="min-h-full bg-gray-50 pt-24 pb-20">
+    <div class="container mx-auto px-4 xl:max-w-4xl">
+
+        <h1 class="mb-2 text-4xl font-extrabold text-gray-900">Browse Cars</h1>
+        <p class="mb-10 text-gray-600">
+            All available cars grouped by price category. Check the ones you're interested in,
+            then hit <span class="font-semibold text-gray-900">Search Nearby</span> to find listings near you.
+        </p>
+
+        <form class="space-y-5">
+            @{
+                var grouped = Model.UsedCars
+                    .GroupBy(c => c.PriceCategory)
+                    .OrderBy(g => g.Key);
+            }
+
+            @foreach (var group in grouped)
+            {
+                var id = $"group_{group.Key}";
+                <div class="mb-4 overflow-hidden rounded-lg border bg-white shadow-sm">
+
+                    <!-- Accordion Header -->
+                    <button type="button"
+                            class="flex w-full items-center justify-between bg-gray-100 px-4 py-3 transition hover:bg-gray-200"
+                            onclick="toggleAccordion('@id')">
+                        <span class="text-lg font-semibold text-gray-800">
+                            Under $@String.Format("{0:N0}", group.Key)
+                        </span>
+                        <svg id="@(id)_icon"
+                             class="h-5 w-5 text-gray-600 transition-transform duration-300"
+                             fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+
+                    <!-- Accordion Content -->
+                    <div id="@id" class="max-h-0 overflow-hidden bg-white transition-all duration-300">
+                        <div class="space-y-3 p-4">
+                            @foreach (var car in group)
+                            {
+                                <div class="flex items-center gap-3 rounded-lg border p-3 hover:bg-gray-50">
+                                    <input type="checkbox"
+                                           value="@car.Model"
+                                           class="h-4 w-4 shrink-0 border-gray-300 focus:ring-2 focus:ring-blue-300" />
+                                    <div class="flex flex-col">
+                                        <a asp-controller="Home" asp-action="CarModel"
+                                           asp-route-make="@car.Make" asp-route-model="@car.Model"
+                                           class="text-sm font-semibold text-blue-600 hover:underline">
+                                            @car.Make @car.Model (@car.Year)
+                                        </a>
+                                        <span class="text-xs text-gray-500">@car.Type &mdash; Under $@String.Format("{0:N0}", car.PriceCategory)</span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                </div>
+            }
+
+            <button type="button"
+                    class="mt-4 w-full rounded-lg bg-[var(--electric)] py-3 font-semibold text-white
+                           shadow-md transition hover:bg-violet-700">
+                Search Nearby
+            </button>
+        </form>
+
+    </div>
+</div>
+
+<script>
+    function toggleAccordion(id) {
+        const content = document.getElementById(id);
+        const icon = document.getElementById(id + "_icon");
+
+        if (content.style.maxHeight) {
+            content.style.maxHeight = null;
+            icon.style.transform = "rotate(0deg)";
+        } else {
+            content.style.maxHeight = content.scrollHeight + "px";
+            icon.style.transform = "rotate(180deg)";
+        }
+    }
+</script>
