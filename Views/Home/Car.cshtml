@@ -66,15 +66,17 @@
                     <div class="flex flex-col overflow-hidden rounded-2xl border bg-white shadow-md transition hover:shadow-xl">
 
                         <!-- Photo -->
-                        @if (listing.FirstPhoto != null)
-                        {
-                            <img src="@listing.FirstPhoto" alt="@listing.Heading"
-                                 class="h-48 w-full object-cover" loading="lazy" />
-                        }
-                        else
-                        {
-                            <div class="flex h-48 w-full items-center justify-center bg-gray-100 text-5xl">🚗</div>
-                        }
+                        <div class="relative h-48 w-full bg-gray-100">
+                            <div class="flex h-48 w-full items-center justify-center text-5xl">🚗</div>
+                            @if (listing.FirstPhoto != null)
+                            {
+                                <img src="@listing.FirstPhoto"
+                                     alt=""
+                                     class="absolute inset-0 h-full w-full object-cover"
+                                     loading="lazy"
+                                     onerror="this.style.display='none'" />
+                            }
+                        </div>
 
                         <div class="flex flex-1 flex-col p-6">
 

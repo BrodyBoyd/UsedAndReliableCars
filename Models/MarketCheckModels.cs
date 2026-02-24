@@ -69,12 +69,65 @@ namespace UsedAndReliableCars.Models
         [JsonPropertyName("vdp_url")]
         public string? VdpUrl { get; set; }
 
+        /// <summary>Nested media object returned by the MarketCheck API.</summary>
+        [JsonPropertyName("media")]
+        public MediaInfo? Media { get; set; }
+
+        /// <summary>
+        /// First real photo URL (cached preferred, raw fallback).
+        /// Returns null if only placeholder/no-photo images are available,
+        /// so the view shows the car emoji fallback instead.
+        /// </summary>
+        [JsonIgnore]
+        public string? FirstPhoto =>
+            Media?.PhotoLinksCached?.FirstOrDefault(IsRealPhoto)
+            ?? Media?.PhotoLinks?.FirstOrDefault(IsRealPhoto);
+
+        /// <summary>
+        /// Returns false for known dealer "no photo available" placeholder images.
+        /// Add new patterns here as you spot them in the wild.
+        /// </summary>
+        private static bool IsRealPhoto(string url)
+        {
+            if (string.IsNullOrEmpty(url)) return false;
+
+            string[] placeholderPatterns =
+            [
+                "nophoto",
+                "no_photo",
+                "no-photo",
+                "noimage",
+                "no_image",
+                "no-image",
+                "newarrivalphoto",              // imagescdn.dealercarsearch.com
+                "notavailable",
+                "not-available",
+                "vehicle-image-notavailable",   // carforniala.com
+                "coming-soon",
+                "comingsoon",
+                "defaultcar",
+                "default_car",
+                "placeholder",
+                "stockphoto",
+                "stock_photo",
+                "stock-photo",
+            ];
+
+            var lower = url.ToLowerInvariant();
+            return !Array.Exists(placeholderPatterns, p => lower.Contains(p));
+        }
+    }
+
+    /// <summary>Photo URLs nested inside a CarListing's "media" field.</summary>
+    public class MediaInfo
+    {
+        /// <summary>MarketCheck-cached copies — preferred; more reliable than dealer-hosted URLs.</summary>
+        [JsonPropertyName("photo_links_cached")]
+        public List<string>? PhotoLinksCached { get; set; }
+
+        /// <summary>Original dealer-hosted photo URLs.</summary>
         [JsonPropertyName("photo_links")]
         public List<string>? PhotoLinks { get; set; }
-
-        /// <summary>Convenience: first photo URL, or null.</summary>
-        [JsonIgnore]
-        public string? FirstPhoto => PhotoLinks?.Count > 0 ? PhotoLinks[0] : null;
     }
 
     // -------------------------------------------------------------------------
