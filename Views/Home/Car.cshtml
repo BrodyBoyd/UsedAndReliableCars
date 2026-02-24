@@ -1,4 +1,4 @@
-﻿@model UsedAndReliableCars.Models.CarSearchResultViewModel
+@model UsedAndReliableCars.Models.CarSearchResultViewModel
 @{
     ViewData["Title"] = "TrustRide - Search Results";
 }
@@ -31,7 +31,6 @@
             ← Back to Search
         </a>
 
-        <!-- Error state -->
         @if (!string.IsNullOrEmpty(Model.ErrorMessage))
         {
             <div class="mt-6 rounded-2xl border border-red-200 bg-red-50 px-10 py-10 text-center shadow-md">
@@ -57,7 +56,8 @@
                 </a>
             </div>
         }
-        else{
+        else
+        {
             <div class="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 @foreach (var listing in Model.Listings)
                 {
@@ -65,9 +65,9 @@
 
                     <div class="flex flex-col overflow-hidden rounded-2xl border bg-white shadow-md transition hover:shadow-xl">
 
-                        <!-- Photo -->
+                        <!-- Photo: emoji fallback always underneath; img hides on error -->
                         <div class="relative h-48 w-full bg-gray-100">
-                            <div class="flex h-48 w-full items-center justify-center text-5xl">🚗</div>
+                            <div class="flex h-full w-full items-center justify-center text-5xl">🚗</div>
                             @if (listing.FirstPhoto != null)
                             {
                                 <img src="@listing.FirstPhoto"
@@ -81,7 +81,7 @@
                         <div class="flex flex-1 flex-col p-6">
 
                             <!-- Title -->
-                            <h2 class="text-lg leading-snug font-bold text-gray-900">
+                            <h2 class="text-lg font-bold leading-snug text-gray-900">
                                 @(listing.Heading ?? $"{listing.Year} {listing.Make} {listing.Model}")
                             </h2>
 
@@ -90,7 +90,6 @@
                                 <span class="text-2xl font-extrabold text-gray-900">
                                     @(listing.Price.HasValue ? $"${listing.Price.Value:N0}" : "Price N/A")
                                 </span>
-
                                 @if (trend == "lower")
                                 {
                                     <span class="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700"
@@ -132,7 +131,7 @@
                             </ul>
 
                             <!-- Action buttons -->
-                            <div class="mt-6 flex flex-wrap gap-3">
+                            <div class="mt-auto flex flex-wrap gap-3 pt-6">
                                 @if (!string.IsNullOrEmpty(listing.VdpUrl))
                                 {
                                     <a href="@listing.VdpUrl" target="_blank" rel="noopener noreferrer"
