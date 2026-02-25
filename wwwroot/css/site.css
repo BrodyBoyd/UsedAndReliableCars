@@ -5,6 +5,7 @@
     --dark: #4A4A4A;
     --electric: #0AC4FF;
     --purewhite: #FFFFFF;
+    --silver: #d7d7d7;
 }
 
 .car-Background {
@@ -434,7 +435,7 @@
 }
 
 .breathing-card {
-    animation: breathe 4s ease-in-out infinite;
+    animation: breathe .04s ease-in-out infinite;
 }
 
 /* Glass drift */
