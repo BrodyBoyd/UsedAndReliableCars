@@ -143,6 +143,21 @@ namespace UsedAndReliableCars.Models
         public int TotalFound { get; set; }
         public string? ErrorMessage { get; set; }
         public Dictionary<string, string> PriceTrendByVin { get; set; } = new();
+
+        /// <summary>1-based current page.</summary>
+        public int CurrentPage { get; set; } = 1;
+
+        /// <summary>Number of results per page.</summary>
+        public int PageSize { get; set; } = 20;
+
+        /// <summary>Total number of pages (0 if no results).</summary>
+        public int TotalPages => PageSize <= 0 ? 0 : (int)Math.Ceiling((double)TotalFound / PageSize);
+
+        /// <summary>Search params for building pagination links (e.g. selectedCar, year, make, zip).</summary>
+        public string? SelectedCar { get; set; }
+        public string? Year { get; set; }
+        public string? Make { get; set; }
+        public string? Zip { get; set; }
     }
 
     public class PriceHistoryViewModel

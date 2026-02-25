@@ -117,10 +117,19 @@ namespace UsedAndReliableCars.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> FindCars( string? selectedCar, string? year, string? make, string? zip, CancellationToken cancellationToken )
+        public async Task<IActionResult> FindCars( string? selectedCar, string? year, string? make, string? zip, int page = 1, CancellationToken cancellationToken = default )
         {
             var viewModel = new CarSearchResultViewModel();
             var queryParams = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+            const int pageSize = 20;
+            if (page < 1) page = 1;
+            viewModel.CurrentPage = page;
+            viewModel.PageSize = pageSize;
+            viewModel.SelectedCar = selectedCar;
+            viewModel.Year = year;
+            viewModel.Make = make;
+            viewModel.Zip = zip;
 
             int? maxPriceCategory = null;
             if (!string.IsNullOrEmpty(selectedCar))
@@ -158,9 +167,11 @@ namespace UsedAndReliableCars.Controllers
             if (!string.IsNullOrEmpty(year)) queryParams["year"] = year;
             if (!string.IsNullOrEmpty(make)) queryParams["make"] = make;
             if (!string.IsNullOrEmpty(zip)) queryParams["zip"] = zip;
-            queryParams["rows"] = "50";
 
-            if (queryParams.Count <= 1)
+            queryParams["rows"] = pageSize.ToString();
+            queryParams["start"] = ((page - 1) * pageSize).ToString();
+
+            if (string.IsNullOrEmpty(selectedCar))
             {
                 viewModel.ErrorMessage = "Please select one car from the list and click \"Find these cars\".";
                 return View("Car", viewModel);
@@ -184,7 +195,7 @@ namespace UsedAndReliableCars.Controllers
                     if (maxPriceCategory.HasValue)
                         list = list.Where(l => !l.Price.HasValue || l.Price.Value <= maxPriceCategory.Value).ToList();
                     viewModel.Listings = list;
-                    viewModel.TotalFound = list.Count;
+                    viewModel.TotalFound = parsed.NumFound;
                     await EnrichPriceTrendsAsync(viewModel, options, cancellationToken);
                 }
             }
