@@ -102,7 +102,7 @@
                 </p>
 
                 <div class="flex flex-wrap justify-center gap-4 lg:justify-start">
-                    <a id="scrollBtn" asp-action="FindCars" asp-controller="Home"
+                    <a href="#bottomSection"
                        class="inline-block rounded bg-[var(--tan)] px-8 py-3 text-center text-lg
                        font-semibold text-[var(--jet)] transition-transform hover:scale-105 hover:bg-[var(--brown)] hover:text-[var(--bone)] hover:shadow-[0_10px_20px_-10px_black]">
                         Find My Next Car!
@@ -227,4 +227,13 @@
             if (icon) icon.style.transform = "rotate(180deg)";
         }
     }
+
+    document.querySelector('[href="#bottomSection"]').addEventListener("click", () => {
+        document.getElementById("bottomSection").scrollIntoView({ behavior: "smooth" });
+        document.querySelectorAll('[id^="group_"]').forEach(content => {
+            content.style.maxHeight = content.scrollHeight + "px";
+            const icon = document.getElementById(content.id + "_icon");
+            if (icon) icon.style.transform = "rotate(180deg)";
+        });
+    });
 </script>
