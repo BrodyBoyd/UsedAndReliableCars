@@ -112,5 +112,14 @@ namespace UsedAndReliableCars.Controllers
         {
             return View();
         }
+
+        public IActionResult CarDetails()
+        {
+            var model = new UsedCar
+            {
+                UsedCars = usedCars // your list
+            };
+            return View(usedCars);
+        }
     }
 }

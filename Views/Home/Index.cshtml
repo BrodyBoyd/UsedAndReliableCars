@@ -98,7 +98,8 @@
 
                 <div class="flex flex-wrap lg:justify-start justify-center gap-4">
                     <button id="searchBtn"
-                            class="px-8 py-3 text-lg font-semibold rounded bg-[var(--electric)] text-[var(--dark)]
+                        href="#resultsDiv"
+                            class="px-8 py-3 text-lg font-semibold rounded bg-[var(--electric)] text-slate-900
                        hover:shadow-[0_10px_20px_-10px_black] hover:scale-105 transition-transform">
                         Find My Next Car!
                     </button>
@@ -115,75 +116,99 @@
         </div>
 
 
-        <div class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-b from-transparent to-slate-800 pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-b from-transparent to-slate-900 pointer-events-none"></div>
 
     </div>
 
 
     <!-- Feature Strip -->
-    <section class="w-full bg-slate-800  py-16 px-8">
+    <section class="w-full bg-slate-900 py-16 px-8">
         <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
+
             <div>
-                <h3 class="text-2xl font-bold mb-2 text-stone-100">Reliability First</h3>
-                <p class="text-stone-300/90">
-                    We start with the latest Consumer Reports "Top Picks" and reliability ratings. If it isn't built to last, it isn't on our site.
+                <h3 class="text-2xl font-bold mb-2 text-[var(--electric)]">
+                    Reliability First
+                </h3>
+                <p class="text-slate-300">
+                    We start with the latest Consumer Reports "Top Picks" and reliability ratings.
+                    If it isn't built to last, it isn't on our site.
                 </p>
             </div>
+
             <div>
-                <h3 class="text-2xl font-bold mb-2 text-stone-100">Market Intelligence</h3>
-                <p class="text-stone-300/90">
-                    We pull live For Sale By Owner (FSBO) listings data from the internet to see every available listing in your area.
+                <h3 class="text-2xl font-bold mb-2 text-[var(--electric)]">
+                    Market Intelligence
+                </h3>
+                <p class="text-slate-300">
+                    We pull live For Sale By Owner (FSBO) listings from across the internet to show
+                    every available option in your area.
                 </p>
             </div>
+
             <div>
-                <h3 class="text-2xl font-bold mb-2 text-stone-100">Agentic Analysis</h3>
-                <p class="text-stone-300/90">
-                    Our AI agents calculate the "Value Score"—a proprietary mix of price, mileage, and historical depreciation—to find the 1% of cars that are true bargains.
+                <h3 class="text-2xl font-bold mb-2 text-[var(--electric)]">
+                    Agentic Analysis
+                </h3>
+                <p class="text-slate-300">
+                    Our AI agents calculate the "Value Score"—a proprietary blend of price, mileage,
+                    and historical depreciation—to identify the true standouts.
                 </p>
             </div>
+
         </div>
     </section>
 
+    <div class="bg-gradient-to-b from-slate-900 to-[var(--electric)]">
+        <section class="max-w-6xl mx-auto px-4 py-20 ">
 
-    <section class=" max-w-6xl mx-auto px-4 my-20">
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-3xl font-extrabold text-white">
+                    Search Results
+                </h2>
+                <p id="DisplayResultsTotal" class="text-slate-400 text-sm hidden">
+                    Showing <span id="ResultCount" class="font-semibold"></span> cars based on your filters
+                </p>
+            </div>
 
-        <!-- Header -->
-        <div class="flex items-center justify-between mb-8">
-            <h2 class="text-3xl font-extrabold text-gray-900">
-                Search Results
-            </h2>
-            <p id="DisplayResultsTotal" class="text-gray-600 text-sm hidden">
-                Showing <span id="ResultCount" class="font-semibold"></span> cars based on your filters
-            </p>
-        </div>
+            <!-- Sorting -->
+            @* <div class="flex items-center gap-4 mb-10">
+                <label class="text-sm font-medium text-slate-300">Sort by:</label>
 
-        <!-- Sorting -->
-        <div class="flex items-center gap-4 mb-10">
-            <label class="text-sm font-medium text-gray-700">Sort by:</label>
-            <select class="border border-gray-300 rounded-xl px-4 py-2 text-sm bg-white shadow-sm
-                       focus:ring-2 focus:ring-blue-500">
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
-                <option value="year-new">Year: Newest First</option>
-                <option value="year-old">Year: Oldest First</option>
-                <option value="reliability">Reliability Rating</option>
-            </select>
-        </div>
-        <p id="loading" class="hidden"> Loading....</p>
+                <select onchange="ChangeSort()" id="sortBy"
+                        class="border border-slate-700 rounded-xl px-4 py-2 text-sm bg-slate-800 text-slate-200 shadow-sm
+                           focus:ring-2 focus:ring-[var(--electric)] focus:border-[var(--electric)]">
+                    <option value="price">Price: Low to High</option>
+                    <option value="miles">Miles: Low to High</option>
+                </select>
+            </div> *@
 
-        <!-- Results Grid -->
-        <div id="resultsDiv" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-5">
-            <!-- Car Card -->
-            
+            <p id="loading" class="hidden text-slate-300">Loading...</p>
 
-            <!-- Duplicate card for each result -->
-        </div>
-        <div id="PageButtons" class="hidden">
-            <p id="CurrentPage"></p>
-            <button class="text-xl rounded-xl bg-slate-600 px-2 py-3 text-stone-200 hover:shadow-[0_10px_20px_-10px_black] hover:scale-105 mr-3" onclick="BackPage()">Back</button>
-            <button class="text-xl rounded-xl bg-slate-600 px-2 py-3 text-stone-200 hover:shadow-[0_10px_20px_-10px_black] hover:scale-105 mr-3" onclick="ForwardPage()">Forward</button>
-        </div>
-    </section>
+            <!-- Results Grid -->
+            <div id="resultsDiv" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-5">
+                <!-- Car Cards will be injected here -->
+            </div>
+
+            <!-- Pagination -->
+            <div id="PageButtons" class="hidden mt-6">
+                <p id="CurrentPage" class="text-slate-300 mb-3"></p>
+
+                <button class="text-xl rounded-xl bg-slate-800 px-4 py-3 text-slate-200 border border-slate-700
+                           hover:border-[var(--electric)] hover:shadow-[0_10px_20px_-10px_black] hover:scale-105 mr-3 transition"
+                onclick="BackPage()">
+                    Back
+                </button>
+
+                <button class="text-xl rounded-xl bg-slate-800 px-4 py-3 text-slate-200 border border-slate-700
+                           hover:border-[var(--electric)] hover:shadow-[0_10px_20px_-10px_black] hover:scale-105 transition"
+                onclick="ForwardPage()">
+                    Forward
+                </button>
+            </div>
+
+        </section>
+    </div>
 
 
 
@@ -192,12 +217,12 @@
 
         <!-- Top fade (into previous section) -->
         <div class="absolute top-0 left-0 w-full h-32
-                bg-gradient-to-t from-transparent to-white
+                bg-gradient-to-t from-transparent to-[var(--electric)]
                 pointer-events-none"></div>
 
         <!-- Bottom fade (into next section) -->
         <div class="absolute bottom-0 left-0 w-full h-32
-                bg-gradient-to-b from-transparent to-white
+                bg-gradient-to-b from-transparent to-slate-900
                 pointer-events-none"></div> 
 
         <div class="max-w-8xl mx-auto gap-10 text-center transition">
@@ -292,10 +317,9 @@
                     document.getElementById("searchBtn").click();
                 }
             }
-            const ForwardPage = () => {
-                
-                PageNum++;
 
+            const ForwardPage = () => {
+                PageNum++;
                 if (((PageNum * 6) - ResultTotalAmount) < 0){
                     document.getElementById("CurrentPage").innerHTML = `Page: ${PageNum + 1}`;
                     document.getElementById("searchBtn").click();
@@ -303,12 +327,18 @@
                 else {
                     PageNum--;
                 }
-                
+            }
+
+            const ChangeSort = () => {
+                console.log(document.getElementById('sortBy').value);
+
+                document.getElementById("searchBtn").click();
             }
 
             document.getElementById("searchBtn").addEventListener("click", async () => {
                 const loading = document.getElementById("loading");
                 const resultsDiv = document.getElementById("resultsDiv");
+                const sortBy = document.getElementById("sortBy");
 
                 if (loading) loading.classList.remove("hidden");
                 if (resultsDiv) resultsDiv.innerHTML = '';
@@ -400,6 +430,9 @@
                   params.append("year", 2020);
                   params.append("priceMax", 25000);
                 }
+                if (sortBy) {
+                    params.append("sortBy", sortBy)
+                }
                 
 
                 try {
@@ -426,18 +459,48 @@
                    
                     if (data.listings && data.listings.length > 0) {
                     resultsDiv.innerHTML = data.listings.map(car => `
-                        <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 hover:shadow-lg hover:-translate-y-1 transition-all">
-                            <div class="flex justify-between items-start">
-                                <h3 class="text-xl font-bold text-gray-900">${car.heading || `${car.year} ${car.make} ${car.model}`}</h3>
-                            </div>
-                            <p class="text-sm text-gray-600 mt-2">$${(car.price != null) ? Number(car.price).toLocaleString() : 'Price Not Available'}</p>
-                            <ul class="text-sm text-gray-700 mt-5 mb-3 space-y-1">
-                                <li>• Mileage: ${(car.miles != null) ? Number(car.miles).toLocaleString() : 'N/A'}</li>
-                                <li>• City: ${car.dealer?.city || ''}, ${car.dealer?.state || ''}</li>
-                                <li>• Color: ${car.exterior_color || car.paint_color || car.color || 'N/A'}</li>
-                            </ul>
-                            <a href="${car.vdp_url}" target="_blank" rel="noopener noreferrer" class="mt-6 w-full px-2 bg-[var(--electric)] text-[var(--dark)] py-2.5 rounded-xl font-semibold hover:shadow-md hover:scale-[1.02] transition">Select This Car</a>
-                        </div>
+                                    <div class="bg-slate-900/80 border border-slate-700 rounded-2xl p-6 shadow-lg
+                        hover:border-[var(--electric)] hover:shadow-[0_0_25px_-5px_var(--electric)]
+                        hover:-translate-y-1 transition-all">
+
+                <!-- Header -->
+                <div class="flex justify-between items-start mb-3">
+                    <h3 class="text-xl font-bold text-white">
+                        ${car.heading || `${car.year} ${car.make} ${car.model}`}
+                    </h3>
+                </div>
+
+                <!-- Price -->
+                <p class="text-lg font-semibold text-[var(--electric)]">
+                    $${(car.price != null) ? Number(car.price).toLocaleString() : 'Price Not Available'}
+                </p>
+
+                <!-- Divider -->
+                <div class="h-px w-full bg-slate-700 my-4"></div>
+
+                <!-- Details -->
+                <div class="space-y-2 text-sm text-slate-300">
+                    <p><span class="font-semibold text-white">Mileage:</span> ${(car.miles != null) ? Number(car.miles).toLocaleString() : 'N/A'}</p>
+
+                    <p><span class="font-semibold text-white">Location:</span>
+                        ${car.dealer?.city || ''}${car.dealer?.city ? ',' : ''} ${car.dealer?.state || ''}
+                    </p>
+
+                    <p><span class="font-semibold text-white">Color:</span>
+                        ${car.exterior_color || car.paint_color || car.color || 'N/A'}
+                    </p>
+                </div>
+
+                <!-- Button -->
+                <a href="${car.vdp_url}" target="_blank" rel="noopener noreferrer"
+                   class="mt-6 block w-full text-center px-4 py-3 rounded-xl font-semibold
+                          bg-stone-500 text-slate-900
+                          hover:bg-stone-600
+                          hover:shadow-[0_0_20px_var(--electric)]
+                          transition">
+                    Select This Car
+                </a>
+            </div>
                     `).join('');
                 } else {
                     resultsDiv.innerHTML = '<p class="text-gray-600">No results found</p>';

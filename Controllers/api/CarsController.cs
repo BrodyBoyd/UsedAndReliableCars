@@ -24,7 +24,7 @@ namespace UsedAndReliableCars.Controllers.api
 
         //Can add more or remove params
         [HttpGet("search")]
-        public async Task<IActionResult> Search(string? make, string? model, int? year, decimal? priceMax, string? zip, int? radius, string? type, int? PageNum = 0)
+        public async Task<IActionResult> Search(string? make, string? model, int? year, decimal? priceMax, string? sortBy, string? type, int? PageNum = 0)
         {
             var apiKey = _configuration["MarketCheck:ApiKey"];
 
@@ -41,13 +41,23 @@ namespace UsedAndReliableCars.Controllers.api
             if (priceMax.HasValue)
                 url += $"&price_range=0-{priceMax.Value}";
 
-            if (!string.IsNullOrEmpty(zip)) 
-                url += $"&zip={Uri.EscapeDataString(zip)}";
+            //Console.WriteLine(sortBy);
 
-            if (radius.HasValue) 
-                url += $"&radius={radius.Value}";
-
-
+            //if (!string.IsNullOrEmpty(sortBy))
+            //{
+            //    if (sortBy == "price")
+            //    {
+            //        url += $"&sort_by=price";
+            //    }
+            //    else if (sortBy == "miles")
+            //    {
+            //        url += $"&sort_by=miles";
+            //    }
+            //} else
+            //{
+            //    url += $"&sort_by=price";
+            //}
+            
             url += $"&rows={PageSize}";
             url += $"&start={PageNum * PageSize}";
 

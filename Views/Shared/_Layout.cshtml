@@ -1,6 +1,6 @@
 ﻿<!DOCTYPE html>
 
-<html>
+<html class="bg-slate-900">
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>@ViewBag.Title</title>
@@ -91,7 +91,7 @@
             </li>
 
             <li class="my-0 h-0 group-has-checked:h-6 group-has-checked:my-4 md:mx-2 md:h-2 md:group-has-checked:my-0">
-                <a href="#" onClick="closeMenu()"
+                <a asp-action="CarDetails" onClick="closeMenu()"
                    class="h-0 opacity-0 md:opacity-100 group-has-checked:opacity-100 cursor-pointer">
                     Car Details
                 </a>
@@ -125,7 +125,7 @@
         @RenderBody()
     </div>
     <footer>
-        <div class="w-full bg-slate-900 text-gray-300 py-6 mt-12">
+        <div class="w-full bg-slate-900 text-stone-400 py-6 mt-12">
             <div class="max-w-6xl mx-auto text-center">
                 <p>&copy; @DateTime.Now.Year AutoGems. All rights reserved.</p>
             </div>
