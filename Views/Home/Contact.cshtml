@@ -16,17 +16,16 @@
         <h1 class="text-5xl font-extrabold text-white drop-shadow-lg">Contact Us</h1>
         <p class="mt-4 text-lg text-gray-200">We'd love to hear from you</p>
     </div>
-    <div class="pointer-events-none absolute bottom-0 left-0 h-32 w-full bg-gradient-to-b from-transparent to-white"></div>
+    <div class="pointer-events-none absolute bottom-0 left-0 h-32 w-full bg-gradient-to-b from-transparent to-[#EAE0D5]"></div>
 </div>
 
-<!-- Contact Section -->
-<section class="bg-white px-8 py-20">
+<section class="bg-[#EAE0D5] px-8 py-20">
     <div class="mx-auto grid max-w-5xl gap-16 lg:grid-cols-2">
 
         <!-- Left: Info -->
         <div>
-            <h2 class="mb-6 text-3xl font-extrabold text-gray-900">Say Hello</h2>
-            <p class="mb-10 text-lg leading-relaxed text-gray-600">
+            <h2 class="mb-6 text-3xl font-extrabold text-[#0A0908]">Say Hello</h2>
+            <p class="mb-10 text-lg leading-relaxed text-[#5E503F]">
                 Have a question, suggestion, or just want to say hi? Fill out the form and
                 we'll get back to you as soon as we can.
             </p>
@@ -35,63 +34,63 @@
                 <div class="flex items-start gap-4">
                     <span class="text-2xl">📧</span>
                     <div>
-                        <p class="font-semibold text-gray-900">Email</p>
-                        <p class="text-gray-500">hello@autogems.ai</p>
+                        <p class="font-semibold text-[#22333B]">Email</p>
+                        <p class="text-[#5E503F]">hello@autogems.ai</p>
                     </div>
                 </div>
                 <div class="flex items-start gap-4">
                     <span class="text-2xl">🐦</span>
                     <div>
-                        <p class="font-semibold text-gray-900">Twitter / X</p>
-                        <p class="text-gray-500">@@AutoGemsAI</p>
+                        <p class="font-semibold text-[#22333B]">Twitter / X</p>
+                        <p class="text-[#5E503F]">@@AutoGemsAI</p>
                     </div>
                 </div>
                 <div class="flex items-start gap-4">
                     <span class="text-2xl">📍</span>
                     <div>
-                        <p class="font-semibold text-gray-900">Location</p>
-                        <p class="text-gray-500">United States</p>
+                        <p class="font-semibold text-[#22333B]">Location</p>
+                        <p class="text-[#5E503F]">United States</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Right: Form -->
-        <div class="rounded-2xl bg-gray-50 p-10 shadow-md">
+        <div class="rounded-2xl bg-[#f5ede3] p-10 shadow-md border border-[#C6AC8F]">
             <form method="post" asp-controller="Home" asp-action="Contact" class="space-y-6">
                 @Html.AntiForgeryToken()
 
                 <div>
-                    <label class="mb-1 block text-sm font-semibold text-gray-700">Name</label>
+                    <label class="mb-1 block text-sm font-semibold text-[#22333B]">Name</label>
                     <input type="text" name="name" placeholder="Your name"
-                           class="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm
-                                  focus:border-[var(--electric)] focus:ring-2 focus:ring-[var(--electric)]/30 focus:outline-none" />
+                           class="w-full rounded-lg border border-[#C6AC8F] bg-[#EAE0D5] px-4 py-3 text-sm text-[#22333B]
+                                  focus:border-[#5E503F] focus:ring-2 focus:ring-[#5E503F]/30 focus:outline-none" />
                 </div>
 
                 <div>
-                    <label class="mb-1 block text-sm font-semibold text-gray-700">Email</label>
+                    <label class="mb-1 block text-sm font-semibold text-[#22333B]">Email</label>
                     <input type="email" name="email" placeholder="you@example.com"
-                           class="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm
-                                  focus:border-[var(--electric)] focus:ring-2 focus:ring-[var(--electric)]/30 focus:outline-none" />
+                           class="w-full rounded-lg border border-[#C6AC8F] bg-[#EAE0D5] px-4 py-3 text-sm text-[#22333B]
+                                  focus:border-[#5E503F] focus:ring-2 focus:ring-[#5E503F]/30 focus:outline-none" />
                 </div>
 
                 <div>
-                    <label class="mb-1 block text-sm font-semibold text-gray-700">Subject</label>
+                    <label class="mb-1 block text-sm font-semibold text-[#22333B]">Subject</label>
                     <input type="text" name="subject" placeholder="What's this about?"
-                           class="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm
-                                  focus:border-[var(--electric)] focus:ring-2 focus:ring-[var(--electric)]/30 focus:outline-none" />
+                           class="w-full rounded-lg border border-[#C6AC8F] bg-[#EAE0D5] px-4 py-3 text-sm text-[#22333B]
+                                  focus:border-[#5E503F] focus:ring-2 focus:ring-[#5E503F]/30 focus:outline-none" />
                 </div>
 
                 <div>
-                    <label class="mb-1 block text-sm font-semibold text-gray-700">Message</label>
+                    <label class="mb-1 block text-sm font-semibold text-[#22333B]">Message</label>
                     <textarea name="message" rows="5" placeholder="Tell us what's on your mind..."
-                              class="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm
-                                     focus:border-[var(--electric)] focus:ring-2 focus:ring-[var(--electric)]/30 focus:outline-none"></textarea>
+                              class="w-full rounded-lg border border-[#C6AC8F] bg-[#EAE0D5] px-4 py-3 text-sm text-[#22333B]
+                                     focus:border-[#5E503F] focus:ring-2 focus:ring-[#5E503F]/30 focus:outline-none"></textarea>
                 </div>
 
                 <button type="submit"
-                        class="w-full rounded-lg bg-[var(--electric)] py-3 font-semibold text-white
-                               shadow-md transition hover:bg-violet-700">
+                        class="w-full rounded-lg bg-[var(--tan)] py-3 font-semibold text-[var(--jet)]
+                               shadow-md transition hover:bg-[var(--brown)] hover:text-[var(--bone)]">
                     Send Message
                 </button>
             </form>

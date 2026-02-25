@@ -13,13 +13,13 @@
 
 
             <!-- LEFT SIDE (Form) -->
-            <div id="bottomSection" class="order-2 rounded-2xl bg-white px-10 py-14 shadow-xl lg:order-1">
-                <h1 class="text-4xl font-extrabold text-gray-900">
+            <div id="bottomSection" class="order-2 rounded-2xl bg-[#EAE0D5] px-10 py-14 shadow-xl lg:order-1">
+                <h1 class="text-4xl font-extrabold text-[#0A0908]">
                     Find Your Car!
                 </h1>
 
-                <p class="mt-6 leading-relaxed text-gray-600">
-                    <span class="font-semibold text-gray-900">You want the best!</span>
+                <p class="mt-6 leading-relaxed text-[#5E503F]">
+                    <span class="font-semibold text-[#22333B]">You want the best!</span>
                     We want that for you as well. No more guessing whether that car is right for you.
                     Let us help you find the perfect used and reliable car within your budget.
                     Listed below are the most reliable used cars according to Consumer Report and Dave Ramsey.
@@ -47,15 +47,15 @@
 
                             <!-- Accordion Header -->
                             <button type="button"
-                                    class="flex w-full items-center justify-between bg-gray-100 px-4 py-3 transition hover:bg-gray-200"
+                                    class="flex w-full items-center justify-between bg-[#22333B]/10 px-4 py-3 transition hover:bg-[#22333B]/20"
                                     onclick="toggleAccordion('@id')">
 
-                                <span class="text-lg font-semibold text-gray-800">
+                                <span class="text-lg font-semibold text-[#22333B]">
                                     Under $@group.Key.ToString("N0")
                                 </span>
 
                                 <svg id="@(id)_icon"
-                                     class="h-5 w-5 text-gray-600 transition-transform duration-300"
+                                     class="h-5 w-5 text-[#5E503F] transition-transform duration-300"
                                      fill="none" stroke="currentColor" stroke-width="2"
                                      viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -64,18 +64,18 @@
                             </button>
 
                             <!-- Accordion Content -->
-                            <div id="@id" class="max-h-0 overflow-hidden bg-white transition-all duration-300">
+                            <div id="@id" class="max-h-0 overflow-hidden bg-[#EAE0D5] transition-all duration-300">
                                 <div class="space-y-3 p-4">
                                     @foreach (var car in group)
                                     {
                                         var value = $"{car.Make}|{car.Model}|{car.Year}|{car.PriceCategory}";
-                                        <label class="flex cursor-pointer items-center gap-3 rounded-lg border p-3 hover:bg-gray-50">
+                                        <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-[#C6AC8F] p-3 hover:bg-[#C6AC8F]/20">
                                             <input type="radio"
                                                    name="selectedCar"
                                                    value="@value"
-                                                   class="h-4 w-4 border-gray-300 focus:ring-2 focus:ring-blue-300" />
+                                                   class="h-4 w-4 border-[#C6AC8F] focus:ring-2 focus:ring-[#C6AC8F]" />
 
-                                            <span class="text-sm font-medium text-gray-900">
+                                            <span class="text-sm font-medium text-[#22333B]">
                                                 @car.Make @car.Model (@car.Year)
                                             </span>
                                         </label>
@@ -86,7 +86,7 @@
                         </div>
                     }
                     <button type="submit"
-                            class="w-full rounded-lg bg-[var(--electric)] py-3 font-semibold text-[var(--dark)] transition hover:shadow-md">
+                            class="w-full rounded-lg bg-[var(--tan)] py-3 font-semibold text-[var(--jet)] transition hover:bg-[var(--brown)] hover:text-[var(--bone)] hover:shadow-md">
                         Find these cars
                     </button>
                 </form>
@@ -103,14 +103,14 @@
 
                 <div class="flex flex-wrap justify-center gap-4 lg:justify-start">
                     <a id="scrollBtn" asp-action="FindCars" asp-controller="Home"
-                       class="inline-block rounded bg-[var(--electric)] px-8 py-3 text-center text-lg
-                       font-semibold text-[var(--dark)] transition-transform hover:scale-105 hover:shadow-[0_10px_20px_-10px_black]">
+                       class="inline-block rounded bg-[var(--tan)] px-8 py-3 text-center text-lg
+                       font-semibold text-[var(--jet)] transition-transform hover:scale-105 hover:bg-[var(--brown)] hover:text-[var(--bone)] hover:shadow-[0_10px_20px_-10px_black]">
                         Find My Next Car!
                     </a>
 
                     <a href="#"
-                       class="rounded border border-white px-8 py-3 text-lg text-white
-                      transition-colors hover:bg-white hover:text-black">
+                       class="rounded border border-[#EAE0D5] px-8 py-3 text-lg text-[#EAE0D5]
+                      transition-colors hover:bg-[#EAE0D5] hover:text-[#22333B]">
                         About our Service
                     </a>
                 </div>
@@ -120,25 +120,25 @@
         </div>
 
 
-        <div class="pointer-events-none absolute bottom-0 left-0 h-32 w-full bg-gradient-to-b from-transparent to-white"></div>
+        <div class="pointer-events-none absolute bottom-0 left-0 h-32 w-full bg-gradient-to-b from-transparent to-[#EAE0D5]"></div>
 
     </div>
 
 
     <!-- Feature Strip -->
-    <section class="w-full bg-white px-8 py-16">
+    <section class="w-full bg-[#EAE0D5] px-8 py-16">
         <div class="mx-auto grid max-w-6xl grid-cols-1 gap-10 text-center md:grid-cols-3">
             <div>
-                <h3 class="mb-2 text-2xl font-bold">Fast</h3>
-                <p class="text-gray-600">Find hundreds of used cars at the click of a button</p>
+                <h3 class="mb-2 text-2xl font-bold text-[#22333B]">Fast</h3>
+                <p class="text-[#5E503F]">Find hundreds of used cars at the click of a button</p>
             </div>
             <div>
-                <h3 class="mb-2 text-2xl font-bold">Accurate</h3>
-                <p class="text-gray-600">Find exactly what you're searching for</p>
+                <h3 class="mb-2 text-2xl font-bold text-[#22333B]">Accurate</h3>
+                <p class="text-[#5E503F]">Find exactly what you're searching for</p>
             </div>
             <div>
-                <h3 class="mb-2 text-2xl font-bold">Only The Best</h3>
-                <p class="text-gray-600">We do our research so that you will only find the best used cars</p>
+                <h3 class="mb-2 text-2xl font-bold text-[#22333B]">Only The Best</h3>
+                <p class="text-[#5E503F]">We do our research so that you will only find the best used cars</p>
             </div>
         </div>
     </section>
@@ -149,12 +149,12 @@
         <!-- Top fade (into previous section) -->
         <div class="pointer-events-none absolute top-0 left-0 h-32
                 w-full bg-gradient-to-t from-transparent
-                to-white"></div>
+                to-[#EAE0D5]"></div>
 
         <!-- Bottom fade (into next section) -->
         <div class="pointer-events-none absolute bottom-0 left-0 h-32
                 w-full bg-gradient-to-b from-transparent
-                to-white"></div>
+                to-[#EAE0D5]"></div>
 
         <div class="max-w-8xl mx-auto gap-10 text-center transition">
             <div>

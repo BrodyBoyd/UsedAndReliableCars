@@ -21,15 +21,15 @@
             }
         </p>
     </div>
-    <div class="pointer-events-none absolute bottom-0 left-0 h-32 w-full bg-gradient-to-b from-transparent to-white"></div>
+    <div class="pointer-events-none absolute bottom-0 left-0 h-32 w-full bg-gradient-to-b from-transparent to-[#EAE0D5]"></div>
 </div>
 
-<section class="bg-white px-8 py-16">
+<section class="bg-[#EAE0D5] px-8 py-16">
     <div class="mx-auto max-w-6xl">
 
         <!-- Back link -->
         <a asp-controller="Home" asp-action="Index"
-           class="mb-8 inline-flex items-center gap-2 text-sm font-semibold text-gray-500 hover:text-gray-900">
+           class="mb-8 inline-flex items-center gap-2 text-sm font-semibold text-[#5E503F] hover:text-[#22333B]">
             ← Back to Search
         </a>
 
@@ -39,21 +39,21 @@
                 <div class="mb-3 text-4xl">⚠️</div>
                 <p class="text-lg font-semibold text-red-700">@Model.ErrorMessage</p>
                 <a asp-controller="Home" asp-action="Index"
-                   class="mt-6 inline-block rounded-lg bg-[var(--electric)] px-8 py-3 font-semibold
-                          text-[var(--dark)] shadow-md transition hover:shadow-lg">
+                   class="mt-6 inline-block rounded-lg bg-[var(--tan)] px-8 py-3 font-semibold
+                          text-[var(--jet)] shadow-md transition hover:bg-[var(--brown)] hover:text-[var(--bone)] hover:shadow-lg">
                     Try Again
                 </a>
             </div>
         }
         else if (Model.Listings == null || Model.Listings.Count == 0)
         {
-            <div class="mt-6 rounded-2xl border bg-gray-50 px-10 py-16 text-center shadow-md">
+            <div class="mt-6 rounded-2xl border border-[#C6AC8F] bg-[#f5ede3] px-10 py-16 text-center shadow-md">
                 <div class="mb-3 text-4xl">🔍</div>
-                <p class="text-xl font-bold text-gray-800">No listings found</p>
-                <p class="mt-2 text-gray-500">Try a different car or a broader zip code.</p>
+                <p class="text-xl font-bold text-[#22333B]">No listings found</p>
+                <p class="mt-2 text-[#5E503F]">Try a different car or a broader zip code.</p>
                 <a asp-controller="Home" asp-action="Index"
-                   class="mt-6 inline-block rounded-lg bg-[var(--electric)] px-8 py-3 font-semibold
-                          text-[var(--dark)] shadow-md transition hover:shadow-lg">
+                   class="mt-6 inline-block rounded-lg bg-[var(--tan)] px-8 py-3 font-semibold
+                          text-[var(--jet)] shadow-md transition hover:bg-[var(--brown)] hover:text-[var(--bone)] hover:shadow-lg">
                     Search Again
                 </a>
             </div>
@@ -65,10 +65,10 @@
                 {
                     var trend = listing.Vin != null && Model.PriceTrendByVin.TryGetValue(listing.Vin, out var t) ? t : null;
 
-                    <div class="flex flex-col overflow-hidden rounded-2xl border bg-white shadow-md transition hover:shadow-xl">
+                    <div class="flex flex-col overflow-hidden rounded-2xl border border-[#C6AC8F] bg-[#EAE0D5] shadow-md transition hover:shadow-xl">
 
                         <!-- Photo: emoji fallback always underneath; img hides on error -->
-                        <div class="relative h-48 w-full bg-gray-100">
+                        <div class="relative h-48 w-full bg-[#C6AC8F]/30">
                             <div class="flex h-full w-full items-center justify-center text-5xl">🚗</div>
                             @if (listing.FirstPhoto != null)
                             {
@@ -83,13 +83,13 @@
                         <div class="flex flex-1 flex-col p-6">
 
                             <!-- Title -->
-                            <h2 class="text-lg font-bold leading-snug text-gray-900">
+                            <h2 class="text-lg font-bold leading-snug text-[#0A0908]">
                                 @(listing.Heading ?? $"{listing.Year} {listing.Make} {listing.Model}")
                             </h2>
 
                             <!-- Price + trend badge -->
                             <div class="mt-2 flex items-center gap-3">
-                                <span class="text-2xl font-extrabold text-gray-900">
+                                <span class="text-2xl font-extrabold text-[#22333B]">
                                     @(listing.Price.HasValue ? $"${listing.Price.Value:N0}" : "Price N/A")
                                 </span>
                                 @if (trend == "lower")
@@ -109,7 +109,7 @@
                             </div>
 
                             <!-- Details -->
-                            <ul class="mt-4 space-y-1 text-sm text-gray-600">
+                            <ul class="mt-4 space-y-1 text-sm text-[#5E503F]">
                                 @if (listing.Miles.HasValue)
                                 {
                                     <li>🛣️ <span class="font-medium">@listing.Miles.Value.ToString("N0") mi</span></li>
@@ -137,8 +137,8 @@
                                 @if (!string.IsNullOrEmpty(listing.VdpUrl))
                                 {
                                     <a href="@listing.VdpUrl" target="_blank" rel="noopener noreferrer"
-                                       class="flex-1 rounded-lg bg-[var(--electric)] py-2 text-center text-sm
-                                              font-semibold text-[var(--dark)] shadow-sm transition hover:shadow-md">
+                                       class="flex-1 rounded-lg bg-[var(--tan)] py-2 text-center text-sm
+                                              font-semibold text-[var(--jet)] shadow-sm transition hover:bg-[var(--brown)] hover:text-[var(--bone)] hover:shadow-md">
                                         View Listing
                                     </a>
                                 }
@@ -147,8 +147,8 @@
                                     <a asp-controller="Home" asp-action="PriceHistory"
                                        asp-route-vin="@listing.Vin"
                                        asp-route-title="@(listing.Heading ?? $"{listing.Year} {listing.Make} {listing.Model}")"
-                                       class="flex-1 rounded-lg border border-gray-300 py-2 text-center text-sm
-                                              font-semibold text-gray-700 transition hover:bg-gray-100">
+                                       class="flex-1 rounded-lg border border-[#C6AC8F] py-2 text-center text-sm
+                                              font-semibold text-[#5E503F] transition hover:bg-[#C6AC8F]/30">
                                         Price History
                                     </a>
                                 }
@@ -169,7 +169,7 @@
                         <a asp-controller="Home" asp-action="FindCars"
                            asp-route-selectedCar="@Model.SelectedCar" asp-route-year="@Model.Year" asp-route-make="@Model.Make" asp-route-zip="@Model.Zip"
                            asp-route-page="@(Model.CurrentPage - 1)"
-                           class="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50">
+                           class="rounded-lg border border-[#C6AC8F] bg-[#EAE0D5] px-4 py-2 text-sm font-semibold text-[#5E503F] shadow-sm transition hover:bg-[#C6AC8F]/30">
                             ← Previous
                         </a>
                     }
@@ -179,7 +179,7 @@
                         <a asp-controller="Home" asp-action="FindCars"
                            asp-route-selectedCar="@Model.SelectedCar" asp-route-year="@Model.Year" asp-route-make="@Model.Make" asp-route-zip="@Model.Zip"
                            asp-route-page="@p"
-                           class="@(isCurrent ? "bg-[var(--electric)] text-[var(--dark)]" : "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50") rounded-lg px-4 py-2 text-sm font-semibold shadow-sm transition">
+                           class="@(isCurrent ? "bg-[var(--tan)] text-[var(--jet)]" : "border border-[#C6AC8F] bg-[#EAE0D5] text-[#5E503F] hover:bg-[#C6AC8F]/30") rounded-lg px-4 py-2 text-sm font-semibold shadow-sm transition">
                             @p
                         </a>
                     }
@@ -188,7 +188,7 @@
                         <a asp-controller="Home" asp-action="FindCars"
                            asp-route-selectedCar="@Model.SelectedCar" asp-route-year="@Model.Year" asp-route-make="@Model.Make" asp-route-zip="@Model.Zip"
                            asp-route-page="@(Model.CurrentPage + 1)"
-                           class="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50">
+                           class="rounded-lg border border-[#C6AC8F] bg-[#EAE0D5] px-4 py-2 text-sm font-semibold text-[#5E503F] shadow-sm transition hover:bg-[#C6AC8F]/30">
                             Next →
                         </a>
                     }

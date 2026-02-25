@@ -10,13 +10,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Fjalla+One&family=Fugaz+One&family=Luckiest+Guy&display=swap" rel="stylesheet">
 </head>
 <body class="fjalla-one-regular m-0 p-0 flex min-h-screen flex-col">
-    <nav data-text-bright data-bg="purple"
+    <nav data-text-bright data-bg="charcoal"
          class="group absolute fixed top-0 left-1/2 z-50 mx-0 mt-2 mb-12 h-16 w-[95vw]
-            max-w-[1440px] min-w-[380px] -translate-x-1/2 rounded-full bg-[#1f2933]/60 bg-[#1f2933]/40 p-4
-            text-white shadow
+            max-w-[1440px] min-w-[380px] -translate-x-1/2 rounded-full bg-[#0A0908]/70 p-4
+            text-[#EAE0D5] shadow
             shadow-[0_10px_20px_-10px_black]
             ring-2
-            ring-white/50 backdrop-blur-md md:flex">
+            ring-[#C6AC8F]/40 backdrop-blur-md md:flex">
 
         <div class="absolute top-1/2 right-8 -translate-y-1/2 cursor-pointer">Login</div>
 
@@ -27,7 +27,7 @@
                 flex w-fit -translate-1/2 transform items-center rounded-full
                 md:left-0 md:left-4 md:mr-4 md:translate-x-0">
             <a asp-controller="Home" asp-action="Index">
-                <span class="mr-4 ml-2 cursor-pointer font-bold text-[var(--electric)] text-[clamp(1.1rem,calc(2vw_+_0.1rem),2rem)]">
+                <span class="mr-4 ml-2 cursor-pointer font-bold text-[var(--tan)] text-[clamp(1.1rem,calc(2vw_+_0.1rem),2rem)]">
                     AutoGems.ai
                 </span>
             </a>
@@ -53,7 +53,7 @@
         </div>
 
         <ul data-info="MENU ITEMS"
-            class="align-center my-0 w-fit items-center gap-x-4 rounded-[16px] border-[2px_solid_#ffffff88] bg-[var(--electric)]/70
+            class="align-center my-0 w-fit items-center gap-x-4 rounded-[16px] border-[2px_solid_#C6AC8F44] bg-[#22333B]/80
                p-0 transition-all group-has-checked:my-8 group-has-checked:-translate-x-2 group-has-checked:px-16
                group-has-checked:py-2 **:text-[clamp(1rem,calc(2vw_+_0.1rem),1.3rem)] **:transition-all md:absolute
                md:top-1/2
@@ -115,7 +115,7 @@
     <main class="flex-grow">
         @RenderBody()
     </main>
-    <footer class="mt-12 bg-slate-900 py-6 text-gray-300">
+    <footer class="mt-12 bg-[#0A0908] py-6 text-[#C6AC8F]">
         <div class="mx-auto max-w-6xl text-center">
             <p>&copy; @DateTime.Now.Year AutoGems.ai. All rights reserved.</p>
         </div>
