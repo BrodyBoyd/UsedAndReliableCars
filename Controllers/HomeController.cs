@@ -9,81 +9,91 @@ namespace UsedAndReliableCars.Controllers
         {
             new UsedCar
             {
+                CarId = "Mazda6",
                 Type = "Sedan",
                 PriceCategory = 10000,
-                Year = "2014-2021",
+                Year = 2016,
                 Make = "Mazda",
                 Model = "Mazda6"
             },
             new UsedCar
             {
+                CarId = "ToyotaCorolla",
                 Type = "Sedan",
                 PriceCategory = 15000,
-                Year = "2014-2019",
+                Year = 2019,
                 Make = "Toyota",
                 Model = "Corolla"
             },
             new UsedCar
             {
+                CarId = "ChevroletEquinox",
                 Type = "SUV",
                 PriceCategory = 15000,
-                Year = "2018-2024",
+                Year = 2019,
                 Make = "Chevrolet",
                 Model = "Equinox"
             },
             new UsedCar
             {
+                CarId = "ToyotaCorollaHybrid",
                 Type = "Hybrid Sedan",
                 PriceCategory = 20000,
-                Year = "2020 - present",
+                Year = 2021,
                 Make = "Toyota",
                 Model = "Corolla Hybrid"
             },
             new UsedCar
             {
+                CarId = "SubaruCrosstrek",
                 Type = "SUV",
                 PriceCategory = 20000,
-                Year = "2018-2023 ",
+                Year = 2020,
                 Make = "Subaru",
                 Model = "Crosstrek"
             },
             new UsedCar
             {
+                CarId = "ToyotaRAV4Hybrid",
                 Type = "SUV",
                 PriceCategory = 20000,
-                Year = "2016-2018",
+                Year = 2018,
                 Make = "Toyota",
                 Model = "RAV4 Hybrid"
             },
             new UsedCar
             {
+                CarId = "ToyotaHighlander",
                 Type = "SUV",
                 PriceCategory = 20000,
-                Year = "2014-2019",
+                Year = 2018,
                 Make = "Toyota",
                 Model = "Highlander"
             },
             new UsedCar
             {
+                CarId = "LexusNX",
                 Type = "SUV",
                 PriceCategory = 20000,
-                Year = "2015-2021",
+                Year = 2018,
                 Make = "Lexus",
                 Model = "NX"
             },
             new UsedCar
             {
+                CarId = "MazdaMX5Miata",
                 Type = "Sports Car",
                 PriceCategory = 20000,
-                Year = "2016-2024",
+                Year = 2021,
                 Make = "Mazda",
                 Model = "MX-5 Miata"
             },
             new UsedCar
             {
+                CarId = "HondaRidgeline",
                 Type = "Truck",
                 PriceCategory = 25000,
-                Year = "2017-present",
+                Year = 2020,
                 Make = "Honda",
                 Model = "Ridgeline"
             }
@@ -96,6 +106,11 @@ namespace UsedAndReliableCars.Controllers
             };
 
             return View(model);
+        }
+
+        public IActionResult AboutUs()
+        {
+            return View();
         }
     }
 }

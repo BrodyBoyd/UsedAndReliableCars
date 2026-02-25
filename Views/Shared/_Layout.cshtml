@@ -30,7 +30,7 @@
 
             <a asp-action="Index">
                 <span class="ml-2 mr-4 text-[clamp(1.1rem,calc(2vw_+_0.1rem),2rem)] font-bold text-[var(--electric)] cursor-pointer">
-                    TrustRide
+                    AutoGems.ai
                 </span>
             </a>
         </div>
@@ -84,7 +84,7 @@
             </li>
 
             <li class="my-0 h-0 group-has-checked:h-6 group-has-checked:my-4 md:mx-2 md:h-2 md:group-has-checked:my-0">
-                <a href="#" onClick="closeMenu()"
+                <a asp-action="AboutUs" onClick="closeMenu()"
                    class="h-0 opacity-0 md:opacity-100 group-has-checked:opacity-100 cursor-pointer">
                     About Us
                 </a>
@@ -127,9 +127,10 @@
     <footer>
         <div class="w-full bg-slate-900 text-gray-300 py-6 mt-12">
             <div class="max-w-6xl mx-auto text-center">
-                <p>&copy; @DateTime.Now.Year TrustRide. All rights reserved.</p>
+                <p>&copy; @DateTime.Now.Year AutoGems. All rights reserved.</p>
             </div>
         </div>
     </footer>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
