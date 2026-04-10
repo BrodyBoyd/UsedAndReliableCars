@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using UsedAndReliableCars.Agents;
 using UsedAndReliableCars.Models;
@@ -123,6 +124,20 @@ namespace UsedAndReliableCars.Controllers
 
         // ── AI Chat Endpoint ─────────────────────────────────────────────────────
 
+        private List<ChatMessage> GetHistory()
+        {
+            var historyJson = HttpContext.Session.GetString("ChatHistory");
+            if (string.IsNullOrEmpty(historyJson))
+                return new List<ChatMessage>();
+
+            return JsonSerializer.Deserialize<List<ChatMessage>>(historyJson) ?? new List<ChatMessage>();
+        }
+
+        private void SetHistory(List<ChatMessage> history)
+        {
+            HttpContext.Session.SetString("ChatHistory", JsonSerializer.Serialize(history));
+        }
+
         [HttpPost]
         public async Task<IActionResult> AskAI([FromBody] AskAIRequest request)
         {
@@ -146,7 +161,22 @@ namespace UsedAndReliableCars.Controllers
                     maxPrice = priceCat;
             }
 
-            var answer = await _carGuruAgent.AskAsync(request.Question, make: make, model: model, year: year, zip: null, maxPrice: maxPrice);
+            //var answer = await _carGuruAgent.AskAsync(request.Question, make: make, model: model, year: year, zip: null, maxPrice: maxPrice, conversationHistory: historyString);
+            // Retrieve existing chat history from Session
+            var chatHistory = GetHistory();
+
+            // Format history to pass to the agent
+            var historyString = string.Join("\n", chatHistory.Select(m => $"{m.Role}: {m.Content}"));
+
+            // Pass history string into AskAsync
+            var answer = await _carGuruAgent.AskAsync(request.Question, make: make, model: model, year: year, zip: null, maxPrice: maxPrice, conversationHistory: historyString);
+
+            // Append new messages
+            chatHistory.Add(new ChatMessage { Role = "User", Content = request.Question });
+            chatHistory.Add(new ChatMessage { Role = "AI", Content = answer });
+
+            // Save back to Session for continuity
+            SetHistory(chatHistory);
 
             return Json(new { answer });
         }
