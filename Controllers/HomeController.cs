@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
+using UsedAndReliableCars.Agents;
 using UsedAndReliableCars.Models;
 using UsedAndReliableCars.Services;
 
@@ -8,10 +9,12 @@ namespace UsedAndReliableCars.Controllers
     public class HomeController : Controller
     {
         private readonly IMarketCheckApiService _marketCheck;
+        private readonly CarGuruAgent _carGuruAgent;
 
-        public HomeController( IMarketCheckApiService marketCheck )
+        public HomeController(IMarketCheckApiService marketCheck, CarGuruAgent carGuruAgent)
         {
             _marketCheck = marketCheck;
+            _carGuruAgent = carGuruAgent;
         }
 
         public List<UsedCar> usedCars = new List<UsedCar>
@@ -97,27 +100,43 @@ namespace UsedAndReliableCars.Controllers
                 Model = "Ridgeline"
             }
         };
+
         public IActionResult Index()
         {
             var model = new UsedCar
             {
-                UsedCars = usedCars // your list
+                UsedCars = usedCars
             };
 
             return View(model);
         }
+
         public IActionResult About()
         {
             return View();
         }
+
         public IActionResult Contact()
         {
-
             return View();
         }
 
+        // ── AI Chat Endpoint ─────────────────────────────────────────────────────
+
+        [HttpPost]
+        public async Task<IActionResult> AskAI([FromBody] AskAIRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(request?.Question))
+                return BadRequest(new { answer = "Please enter a question." });
+
+            var answer = await _carGuruAgent.AskAsync(request.Question);
+            return Json(new { answer });
+        }
+
+        // ── Car Search ───────────────────────────────────────────────────────────
+
         [HttpGet]
-        public async Task<IActionResult> FindCars( string? selectedCar, string? year, string? make, string? zip, int page = 1, CancellationToken cancellationToken = default )
+        public async Task<IActionResult> FindCars(string? selectedCar, string? year, string? make, string? zip, int page = 1, CancellationToken cancellationToken = default)
         {
             var viewModel = new CarSearchResultViewModel();
             var queryParams = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -209,7 +228,7 @@ namespace UsedAndReliableCars.Controllers
 
         private const int MaxVinHistoryCalls = 15;
 
-        private async Task EnrichPriceTrendsAsync( CarSearchResultViewModel viewModel, JsonSerializerOptions jsonOptions, CancellationToken cancellationToken )
+        private async Task EnrichPriceTrendsAsync(CarSearchResultViewModel viewModel, JsonSerializerOptions jsonOptions, CancellationToken cancellationToken)
         {
             var withVin = viewModel.Listings
                 .Where(l => !string.IsNullOrEmpty(l.Vin) && l.Vin!.Length == 17 && l.Price.HasValue)
@@ -242,9 +261,8 @@ namespace UsedAndReliableCars.Controllers
                     viewModel.PriceTrendByVin[vin] = trend;
         }
 
-        /// <summary>Price history by VIN. GET /Home/PriceHistory?vin=XXX</summary>
         [HttpGet]
-        public async Task<IActionResult> PriceHistory( string? vin, string? title, CancellationToken cancellationToken )
+        public async Task<IActionResult> PriceHistory(string? vin, string? title, CancellationToken cancellationToken)
         {
             var viewModel = new PriceHistoryViewModel { Vin = vin?.Trim(), VehicleTitle = title };
             if (string.IsNullOrEmpty(viewModel.Vin) || viewModel.Vin.Length != 17)
@@ -278,7 +296,7 @@ namespace UsedAndReliableCars.Controllers
             return View(viewModel);
         }
 
-        public async Task<IActionResult> FsboSearch( string? year, string? make, CancellationToken cancellationToken )
+        public async Task<IActionResult> FsboSearch(string? year, string? make, CancellationToken cancellationToken)
         {
             var queryParams = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             if (!string.IsNullOrEmpty(year)) queryParams["year"] = year;
@@ -294,5 +312,11 @@ namespace UsedAndReliableCars.Controllers
             var json = await response.Content.ReadAsStringAsync(cancellationToken);
             return Content(json, "application/json");
         }
+    }
+
+    // ── Request model for AskAI ──────────────────────────────────────────────────
+    public class AskAIRequest
+    {
+        public string? Question { get; set; }
     }
 }

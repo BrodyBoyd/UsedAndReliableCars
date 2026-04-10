@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.ConstrainedExecution;
+using System.Text.Json.Serialization;
 
 namespace UsedAndReliableCars.Models
 {
@@ -11,5 +13,9 @@ namespace UsedAndReliableCars.Models
         public string Model { get; set; }
 
         public List<UsedCar> UsedCars { get; set; } = new List<UsedCar>();
+
+        [JsonIgnore]
+        public UsedCar Car { get; set; }
+
     }
 }
