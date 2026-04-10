@@ -129,7 +129,23 @@ namespace UsedAndReliableCars.Controllers
             if (string.IsNullOrWhiteSpace(request?.Question))
                 return BadRequest(new { answer = "Please enter a question." });
 
-            var answer = await _carGuruAgent.AskAsync(request.Question);
+            // Parse selectedCar (format: Make|Model|Year|PriceCategory)
+            string? make = null;
+            string? model = null;
+            string? year = null;
+            int? maxPrice = null;
+
+            if (!string.IsNullOrWhiteSpace(request.SelectedCar))
+            {
+                var parts = request.SelectedCar.Split('|', StringSplitOptions.TrimEntries);
+                if (parts.Length >= 1 && !string.IsNullOrWhiteSpace(parts[0])) make = parts[0];
+                if (parts.Length >= 2 && !string.IsNullOrWhiteSpace(parts[1])) model = parts[1];
+                if (parts.Length >= 3 && !string.IsNullOrWhiteSpace(parts[2])) year = parts[2];
+                if (parts.Length >= 4 && int.TryParse(parts[3], out var priceCat) && priceCat > 0)
+                    maxPrice = priceCat;
+            }
+
+            var answer = await _carGuruAgent.AskAsync(request.Question, make: make, model: model, year: year, zip: null, maxPrice: maxPrice);
             return Json(new { answer });
         }
 
@@ -318,5 +334,6 @@ namespace UsedAndReliableCars.Controllers
     public class AskAIRequest
     {
         public string? Question { get; set; }
+        public string? SelectedCar { get; set; }
     }
 }

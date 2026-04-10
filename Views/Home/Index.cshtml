@@ -352,6 +352,8 @@
     const sendBtn = document.getElementById("sendBtn");
 
     async function sendMessage() {
+        // Read the currently selected car (format: Make|Model|Year|PriceCategory)
+        const selectedCarVal = document.querySelector('input[name="selectedCar"]:checked')?.value ?? null;
         const question = input.value.trim();
         if (!question) return;
 
@@ -361,12 +363,11 @@
         appendTyping();
 
         try {
-            // include currently selected car so AI can use the max price category
-            const selected = document.querySelector('input[name="selectedCar"]:checked')?.value ?? null;
             const response = await fetch("/Home/AskAI", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ question, selectedCar: selected })
+                // send both Question and SelectedCar so the server can scope AI queries
+                body: JSON.stringify({ Question: question, SelectedCar: selectedCarVal })
             });
             const data = await response.json();
             removeTyping();
