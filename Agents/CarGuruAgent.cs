@@ -103,7 +103,6 @@ namespace UsedAndReliableCars.Agents
         public async Task<string> AskAsync(
             string question,
             string? make = null,
-            string? model = null,
             string? year = null,
             string? zip = null,
             int? maxPrice = null,
@@ -112,9 +111,7 @@ namespace UsedAndReliableCars.Agents
             try
             {
 
-                var carData = await GetCarDataAsync(make, model, year, zip, maxPrice);
-
-                var recommendedModels = JsonSerializer.Serialize(usedCars);
+                var carData = await GetCarDataAsync(make, year, zip, maxPrice);
 
                 var messages = new List<OpenAI.Chat.ChatMessage>
                 {
@@ -123,17 +120,11 @@ namespace UsedAndReliableCars.Agents
                         You are a helpful car inventory assistant named Car-oline, and you work for a used car dealership called AutoGems.
                         AutoGems is a company that collects data on used and reliable cars and directs customers to the information on the cars.
 
+                        Answer questions only using the real market listings data provided below.
                         You want to give users the best deals on used and reliable cars.
-                        If the user has a general or ambiguous request (e.g. "show me reliable SUVs"), use the Recommended Reliable Models below as a guide. 
-                        If the user's criteria matches the Live Market Listings, include them as specific deals.
-                        Do not invent or assume any details not present in either the Recommended Models or the Live Market Listings.
-
-                        Recommended Reliable Models (JSON):
-                        {recommendedModels}
-
-                        Live Market Listings (JSON):
+                        Do not invent or assume any details not present in the Car Listings data seen below.
+                        Car listings (JSON):
                         {carData}
-
                         Message history:
                         {conversationHistory ?? "No history yet."}
                         """
@@ -156,13 +147,12 @@ namespace UsedAndReliableCars.Agents
             }
         }
 
-        private async Task<string> GetCarDataAsync(string? make, string? model, string? year, string? zip, int? maxPrice)
+        private async Task<string> GetCarDataAsync(string? make, string? year, string? zip, int? maxPrice)
         {
             // Build query params for MarketCheck API
             var queryParams = new Dictionary<string, string>();
 
             if (!string.IsNullOrEmpty(make)) queryParams["make"] = make;
-            if (!string.IsNullOrEmpty(model)) queryParams["model"] = model;
             if (!string.IsNullOrEmpty(year)) queryParams["year"] = year;
             if (!string.IsNullOrEmpty(zip)) queryParams["zip"] = zip;
 
@@ -174,14 +164,7 @@ namespace UsedAndReliableCars.Agents
                 queryParams["price_range"] = $"0-{maxPrice.Value}";
 
             var httpResponse = await _marketCheckService.SearchActiveAsync(queryParams);
-
-            if (!httpResponse.IsSuccessStatusCode)
-            {
-                if ((int)httpResponse.StatusCode == 429)
-                    return "[NOTICE: Could not fetch live listings due to high traffic/rate limit. Let the user know we can't show specific current inventory right now, but feel free to answer generally.]";
-
-                return $"[NOTICE: Live market data unavailable. Status: {httpResponse.StatusCode}]";
-            }
+            httpResponse.EnsureSuccessStatusCode();
 
             var json = await httpResponse.Content.ReadAsStringAsync();
 
