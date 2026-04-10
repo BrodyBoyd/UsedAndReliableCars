@@ -129,7 +129,27 @@ namespace UsedAndReliableCars.Controllers
             if (string.IsNullOrWhiteSpace(request?.Question))
                 return BadRequest(new { answer = "Please enter a question." });
 
-            var answer = await _carGuruAgent.AskAsync(request.Question);
+            // Retrieve existing chat history
+            var chatHistory = new List<ChatMessage>();
+            if (TempData["ChatHistory"] is string existingHistoryJson)
+            {
+                chatHistory = JsonSerializer.Deserialize<List<ChatMessage>>(existingHistoryJson) ?? new List<ChatMessage>();
+            }
+
+            // Format history to pass to the agent
+            var historyString = string.Join("\n", chatHistory.Select(m => $"{m.Role}: {m.Content}"));
+
+            // Pass history string into AskAsync
+            var answer = await _carGuruAgent.AskAsync(request.Question, conversationHistory: historyString);
+
+            // Append new messages
+            chatHistory.Add(new ChatMessage { Role = "User", Content = request.Question });
+            chatHistory.Add(new ChatMessage { Role = "AI", Content = answer });
+
+            // Save back to TempData and keep it for the next request
+            TempData["ChatHistory"] = JsonSerializer.Serialize(chatHistory);
+            TempData.Keep("ChatHistory");
+
             return Json(new { answer });
         }
 
@@ -236,29 +256,37 @@ namespace UsedAndReliableCars.Controllers
                 .ToList();
             if (withVin.Count == 0) return;
 
-            var tasks = withVin.Select(async listing =>
+            // FIX 429 Too Many Requests: use the batched search/car/active endpoint for multiple VINs at once
+            var vins = string.Join(",", withVin.Select(l => l.Vin));
+            var queryParams = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             {
-                try
+                { "vins", vins }
+            };
+
+            try
+            {
+                var response = await _marketCheck.SearchActiveAsync(queryParams, cancellationToken);
+                if (!response.IsSuccessStatusCode) return;
+
+                var json = await response.Content.ReadAsStringAsync(cancellationToken);
+                var parsed = JsonSerializer.Deserialize<MarketCheckSearchResponse>(json, jsonOptions);
+                if (parsed?.Listings != null && parsed.Listings.Count > 0)
                 {
-                    var res = await _marketCheck.GetHistoryByVinAsync(listing.Vin!, null, cancellationToken);
-                    if (!res.IsSuccessStatusCode) return (listing.Vin!, (string?)null);
-                    var historyJson = await res.Content.ReadAsStringAsync(cancellationToken);
-                    var records = JsonSerializer.Deserialize<List<VinHistoryRecord>>(historyJson, jsonOptions);
-                    if (records == null || records.Count == 0) return (listing.Vin!, (string?)null);
-                    var prices = records.Where(r => r.Price.HasValue).Select(r => r.Price!.Value).ToList();
-                    if (prices.Count == 0) return (listing.Vin!, (string?)null);
-                    var avg = prices.Average();
-                    var current = listing.Price!.Value;
-                    if (current < avg * 0.97m) return (listing.Vin!, "lower");
-                    if (current > avg * 1.03m) return (listing.Vin!, "higher");
+                    // Calculate the active market average for these combined VINs
+                    var prices = parsed.Listings.Where(l => l.Price.HasValue).Select(l => l.Price!.Value).ToList();
+                    if (prices.Count > 0)
+                    {
+                        var avg = prices.Average();
+                        foreach (var listing in parsed.Listings.Where(l => !string.IsNullOrEmpty(l.Vin) && l.Price.HasValue))
+                        {
+                            var current = listing.Price!.Value;
+                            if (current < avg * 0.97m) viewModel.PriceTrendByVin[listing.Vin!] = "lower";
+                            else if (current > avg * 1.03m) viewModel.PriceTrendByVin[listing.Vin!] = "higher";
+                        }
+                    }
                 }
-                catch { /* ignore per-VIN errors */ }
-                return (listing.Vin!, (string?)null);
-            });
-            var results = await Task.WhenAll(tasks);
-            foreach (var (vin, trend) in results)
-                if (vin != null && trend != null)
-                    viewModel.PriceTrendByVin[vin] = trend;
+            }
+            catch { /* ignore batched call errors */ }
         }
 
         [HttpGet]
@@ -318,5 +346,11 @@ namespace UsedAndReliableCars.Controllers
     public class AskAIRequest
     {
         public string? Question { get; set; }
+    }
+
+    public class ChatMessage
+    {
+        public string? Role { get; set; }
+        public string? Content { get; set; }
     }
 }

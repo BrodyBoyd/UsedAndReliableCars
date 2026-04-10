@@ -9,7 +9,6 @@ namespace UsedAndReliableCars.Agents
     {
         private readonly ChatClient _chatClient;
         private readonly IMarketCheckApiService _marketCheckService;
-        private string history = "";
 
         public CarGuruAgent(ChatClient chatClient, IMarketCheckApiService marketCheckService)
         {
@@ -106,14 +105,15 @@ namespace UsedAndReliableCars.Agents
             string? make = null,
             string? year = null,
             string? zip = null,
-            int? maxPrice = null)
+            int? maxPrice = null,
+            string? conversationHistory = null)
         {
             try
             {
 
                 var carData = await GetCarDataAsync(make, year, zip, maxPrice);
 
-                var messages = new List<ChatMessage>
+                var messages = new List<OpenAI.Chat.ChatMessage>
                 {
                     new SystemChatMessage(
                         $"""
@@ -126,17 +126,15 @@ namespace UsedAndReliableCars.Agents
                         Car listings (JSON):
                         {carData}
                         Message history:
-                        {history}
+                        {conversationHistory ?? "No history yet."}
                         """
                     ),
                     new UserChatMessage(question)
                 };
 
-                
+
 
                 ChatCompletion completion = await _chatClient.CompleteChatAsync(messages);
-                history += $"User: {question}\n";
-                history += $"CarGuruAgent: {completion.Content.FirstOrDefault()?.Text ?? "No response."}\n";
                 return completion.Content.FirstOrDefault()?.Text ?? "No response.";
             }
             catch (HttpRequestException httpEx)
