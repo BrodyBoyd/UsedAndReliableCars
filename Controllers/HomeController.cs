@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using UsedAndReliableCars.Agents;
 using UsedAndReliableCars.Models;
@@ -123,18 +124,28 @@ namespace UsedAndReliableCars.Controllers
 
         // ── AI Chat Endpoint ─────────────────────────────────────────────────────
 
+        private List<ChatMessage> GetHistory()
+        {
+            var historyJson = HttpContext.Session.GetString("ChatHistory");
+            if (string.IsNullOrEmpty(historyJson))
+                return new List<ChatMessage>();
+
+            return JsonSerializer.Deserialize<List<ChatMessage>>(historyJson) ?? new List<ChatMessage>();
+        }
+
+        private void SetHistory(List<ChatMessage> history)
+        {
+            HttpContext.Session.SetString("ChatHistory", JsonSerializer.Serialize(history));
+        }
+
         [HttpPost]
         public async Task<IActionResult> AskAI([FromBody] AskAIRequest request)
         {
             if (string.IsNullOrWhiteSpace(request?.Question))
                 return BadRequest(new { answer = "Please enter a question." });
 
-            // Retrieve existing chat history
-            var chatHistory = new List<ChatMessage>();
-            if (TempData["ChatHistory"] is string existingHistoryJson)
-            {
-                chatHistory = JsonSerializer.Deserialize<List<ChatMessage>>(existingHistoryJson) ?? new List<ChatMessage>();
-            }
+            // Retrieve existing chat history from Session
+            var chatHistory = GetHistory();
 
             // Format history to pass to the agent
             var historyString = string.Join("\n", chatHistory.Select(m => $"{m.Role}: {m.Content}"));
@@ -146,9 +157,8 @@ namespace UsedAndReliableCars.Controllers
             chatHistory.Add(new ChatMessage { Role = "User", Content = request.Question });
             chatHistory.Add(new ChatMessage { Role = "AI", Content = answer });
 
-            // Save back to TempData and keep it for the next request
-            TempData["ChatHistory"] = JsonSerializer.Serialize(chatHistory);
-            TempData.Keep("ChatHistory");
+            // Save back to Session for continuity
+            SetHistory(chatHistory);
 
             return Json(new { answer });
         }
