@@ -352,6 +352,8 @@
     const sendBtn = document.getElementById("sendBtn");
 
     async function sendMessage() {
+        const selectedCarVal = document.querySelector('input[name="selectedCar"]:checked')?.value ?? null;
+
         const question = input.value.trim();
         if (!question) return;
 
@@ -362,11 +364,10 @@
 
         try {
             // include currently selected car so AI can use the max price category
-            const selected = document.querySelector('input[name="selectedCar"]:checked')?.value ?? null;
             const response = await fetch("/Home/AskAI", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ question, selectedCar: selected })
+                body: JSON.stringify({ Question: question, SelectedCar: selectedCarVal })
             });
             const data = await response.json();
             removeTyping();

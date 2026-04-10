@@ -103,6 +103,7 @@ namespace UsedAndReliableCars.Agents
         public async Task<string> AskAsync(
             string question,
             string? make = null,
+            string? model = null,
             string? year = null,
             string? zip = null,
             int? maxPrice = null,
@@ -111,7 +112,7 @@ namespace UsedAndReliableCars.Agents
             try
             {
 
-                var carData = await GetCarDataAsync(make, year, zip, maxPrice);
+                var carData = await GetCarDataAsync(make, model, year, zip, maxPrice);
 
                 var messages = new List<OpenAI.Chat.ChatMessage>
                 {
@@ -147,12 +148,13 @@ namespace UsedAndReliableCars.Agents
             }
         }
 
-        private async Task<string> GetCarDataAsync(string? make, string? year, string? zip, int? maxPrice)
+        private async Task<string> GetCarDataAsync(string? make, string? model, string? year, string? zip, int? maxPrice)
         {
             // Build query params for MarketCheck API
             var queryParams = new Dictionary<string, string>();
 
             if (!string.IsNullOrEmpty(make)) queryParams["make"] = make;
+            if (!string.IsNullOrEmpty(model)) queryParams["model"] = model;
             if (!string.IsNullOrEmpty(year)) queryParams["year"] = year;
             if (!string.IsNullOrEmpty(zip)) queryParams["zip"] = zip;
 
