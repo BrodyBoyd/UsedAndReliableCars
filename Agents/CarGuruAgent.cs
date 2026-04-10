@@ -113,8 +113,6 @@ namespace UsedAndReliableCars.Agents
 
                 var carData = await GetCarDataAsync(make, year, zip, maxPrice);
 
-                var recommendedModels = JsonSerializer.Serialize(usedCars);
-
                 var messages = new List<OpenAI.Chat.ChatMessage>
                 {
                     new SystemChatMessage(
@@ -122,17 +120,11 @@ namespace UsedAndReliableCars.Agents
                         You are a helpful car inventory assistant named Car-oline, and you work for a used car dealership called AutoGems.
                         AutoGems is a company that collects data on used and reliable cars and directs customers to the information on the cars.
 
+                        Answer questions only using the real market listings data provided below.
                         You want to give users the best deals on used and reliable cars.
-                        If the user has a general or ambiguous request (e.g. "show me reliable SUVs"), use the Recommended Reliable Models below as a guide. 
-                        If the user's criteria matches the Live Market Listings, include them as specific deals.
-                        Do not invent or assume any details not present in either the Recommended Models or the Live Market Listings.
-
-                        Recommended Reliable Models (JSON):
-                        {recommendedModels}
-
-                        Live Market Listings (JSON):
+                        Do not invent or assume any details not present in the Car Listings data seen below.
+                        Car listings (JSON):
                         {carData}
-
                         Message history:
                         {conversationHistory ?? "No history yet."}
                         """
@@ -172,14 +164,7 @@ namespace UsedAndReliableCars.Agents
                 queryParams["price_range"] = $"0-{maxPrice.Value}";
 
             var httpResponse = await _marketCheckService.SearchActiveAsync(queryParams);
-
-            if (!httpResponse.IsSuccessStatusCode)
-            {
-                if ((int)httpResponse.StatusCode == 429)
-                    return "[NOTICE: Could not fetch live listings due to high traffic/rate limit. Let the user know we can't show specific current inventory right now, but feel free to answer generally.]";
-
-                return $"[NOTICE: Live market data unavailable. Status: {httpResponse.StatusCode}]";
-            }
+            httpResponse.EnsureSuccessStatusCode();
 
             var json = await httpResponse.Content.ReadAsStringAsync();
 
