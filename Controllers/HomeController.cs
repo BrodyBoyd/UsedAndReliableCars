@@ -1,5 +1,7 @@
 using System.Text.Json;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using UsedAndReliableCars.Agents;
 using UsedAndReliableCars.Models;
 using UsedAndReliableCars.Services;
 
@@ -8,10 +10,12 @@ namespace UsedAndReliableCars.Controllers
     public class HomeController : Controller
     {
         private readonly IMarketCheckApiService _marketCheck;
+        private readonly CarGuruAgent _carGuruAgent;
 
-        public HomeController( IMarketCheckApiService marketCheck )
+        public HomeController(IMarketCheckApiService marketCheck, CarGuruAgent carGuruAgent)
         {
             _marketCheck = marketCheck;
+            _carGuruAgent = carGuruAgent;
         }
 
         public List<UsedCar> usedCars = new List<UsedCar>
@@ -97,27 +101,90 @@ namespace UsedAndReliableCars.Controllers
                 Model = "Ridgeline"
             }
         };
+
         public IActionResult Index()
         {
             var model = new UsedCar
             {
-                UsedCars = usedCars // your list
+                UsedCars = usedCars
             };
 
             return View(model);
         }
+
         public IActionResult About()
         {
             return View();
         }
+
         public IActionResult Contact()
         {
-
             return View();
         }
 
+        // ── AI Chat Endpoint ─────────────────────────────────────────────────────
+
+        private List<ChatMessage> GetHistory()
+        {
+            var historyJson = HttpContext.Session.GetString("ChatHistory");
+            if (string.IsNullOrEmpty(historyJson))
+                return new List<ChatMessage>();
+
+            return JsonSerializer.Deserialize<List<ChatMessage>>(historyJson) ?? new List<ChatMessage>();
+        }
+
+        private void SetHistory(List<ChatMessage> history)
+        {
+            HttpContext.Session.SetString("ChatHistory", JsonSerializer.Serialize(history));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AskAI([FromBody] AskAIRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(request?.Question))
+                return BadRequest(new { answer = "Please enter a question." });
+
+            // Pass history string into AskAsync
+            // Parse selectedCar (format: Make|Model|Year|PriceCategory)
+            string? make = null;
+            string? model = null;
+            string? year = null;
+            int? maxPrice = null;
+
+            if (!string.IsNullOrWhiteSpace(request.SelectedCar))
+            {
+                var parts = request.SelectedCar.Split('|', StringSplitOptions.TrimEntries);
+                if (parts.Length >= 1 && !string.IsNullOrWhiteSpace(parts[0])) make = parts[0];
+                if (parts.Length >= 2 && !string.IsNullOrWhiteSpace(parts[1])) model = parts[1];
+                if (parts.Length >= 3 && !string.IsNullOrWhiteSpace(parts[2])) year = parts[2];
+                if (parts.Length >= 4 && int.TryParse(parts[3], out var priceCat) && priceCat > 0)
+                    maxPrice = priceCat;
+            }
+
+            //var answer = await _carGuruAgent.AskAsync(request.Question, make: make, model: model, year: year, zip: null, maxPrice: maxPrice, conversationHistory: historyString);
+            // Retrieve existing chat history from Session
+            var chatHistory = GetHistory();
+
+            // Format history to pass to the agent
+            var historyString = string.Join("\n", chatHistory.Select(m => $"{m.Role}: {m.Content}"));
+
+            // Pass history string into AskAsync
+            var answer = await _carGuruAgent.AskAsync(request.Question, make: make, model: model, year: year, zip: null, maxPrice: maxPrice, conversationHistory: historyString);
+
+            // Append new messages
+            chatHistory.Add(new ChatMessage { Role = "User", Content = request.Question });
+            chatHistory.Add(new ChatMessage { Role = "AI", Content = answer });
+
+            // Save back to Session for continuity
+            SetHistory(chatHistory);
+
+            return Json(new { answer });
+        }
+
+        // ── Car Search ───────────────────────────────────────────────────────────
+
         [HttpGet]
-        public async Task<IActionResult> FindCars( string? selectedCar, string? year, string? make, string? zip, int page = 1, CancellationToken cancellationToken = default )
+        public async Task<IActionResult> FindCars(string? selectedCar, string? year, string? make, string? zip, int page = 1, CancellationToken cancellationToken = default)
         {
             var viewModel = new CarSearchResultViewModel();
             var queryParams = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -209,7 +276,7 @@ namespace UsedAndReliableCars.Controllers
 
         private const int MaxVinHistoryCalls = 15;
 
-        private async Task EnrichPriceTrendsAsync( CarSearchResultViewModel viewModel, JsonSerializerOptions jsonOptions, CancellationToken cancellationToken )
+        private async Task EnrichPriceTrendsAsync(CarSearchResultViewModel viewModel, JsonSerializerOptions jsonOptions, CancellationToken cancellationToken)
         {
             var withVin = viewModel.Listings
                 .Where(l => !string.IsNullOrEmpty(l.Vin) && l.Vin!.Length == 17 && l.Price.HasValue)
@@ -217,34 +284,41 @@ namespace UsedAndReliableCars.Controllers
                 .ToList();
             if (withVin.Count == 0) return;
 
-            var tasks = withVin.Select(async listing =>
+            // FIX 429 Too Many Requests: use the batched search/car/active endpoint for multiple VINs at once
+            var vins = string.Join(",", withVin.Select(l => l.Vin));
+            var queryParams = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             {
-                try
+                { "vins", vins }
+            };
+
+            try
+            {
+                var response = await _marketCheck.SearchActiveAsync(queryParams, cancellationToken);
+                if (!response.IsSuccessStatusCode) return;
+
+                var json = await response.Content.ReadAsStringAsync(cancellationToken);
+                var parsed = JsonSerializer.Deserialize<MarketCheckSearchResponse>(json, jsonOptions);
+                if (parsed?.Listings != null && parsed.Listings.Count > 0)
                 {
-                    var res = await _marketCheck.GetHistoryByVinAsync(listing.Vin!, null, cancellationToken);
-                    if (!res.IsSuccessStatusCode) return (listing.Vin!, (string?)null);
-                    var historyJson = await res.Content.ReadAsStringAsync(cancellationToken);
-                    var records = JsonSerializer.Deserialize<List<VinHistoryRecord>>(historyJson, jsonOptions);
-                    if (records == null || records.Count == 0) return (listing.Vin!, (string?)null);
-                    var prices = records.Where(r => r.Price.HasValue).Select(r => r.Price!.Value).ToList();
-                    if (prices.Count == 0) return (listing.Vin!, (string?)null);
-                    var avg = prices.Average();
-                    var current = listing.Price!.Value;
-                    if (current < avg * 0.97m) return (listing.Vin!, "lower");
-                    if (current > avg * 1.03m) return (listing.Vin!, "higher");
+                    // Calculate the active market average for these combined VINs
+                    var prices = parsed.Listings.Where(l => l.Price.HasValue).Select(l => l.Price!.Value).ToList();
+                    if (prices.Count > 0)
+                    {
+                        var avg = prices.Average();
+                        foreach (var listing in parsed.Listings.Where(l => !string.IsNullOrEmpty(l.Vin) && l.Price.HasValue))
+                        {
+                            var current = listing.Price!.Value;
+                            if (current < avg * 0.97m) viewModel.PriceTrendByVin[listing.Vin!] = "lower";
+                            else if (current > avg * 1.03m) viewModel.PriceTrendByVin[listing.Vin!] = "higher";
+                        }
+                    }
                 }
-                catch { /* ignore per-VIN errors */ }
-                return (listing.Vin!, (string?)null);
-            });
-            var results = await Task.WhenAll(tasks);
-            foreach (var (vin, trend) in results)
-                if (vin != null && trend != null)
-                    viewModel.PriceTrendByVin[vin] = trend;
+            }
+            catch { /* ignore batched call errors */ }
         }
 
-        /// <summary>Price history by VIN. GET /Home/PriceHistory?vin=XXX</summary>
         [HttpGet]
-        public async Task<IActionResult> PriceHistory( string? vin, string? title, CancellationToken cancellationToken )
+        public async Task<IActionResult> PriceHistory(string? vin, string? title, CancellationToken cancellationToken)
         {
             var viewModel = new PriceHistoryViewModel { Vin = vin?.Trim(), VehicleTitle = title };
             if (string.IsNullOrEmpty(viewModel.Vin) || viewModel.Vin.Length != 17)
@@ -278,7 +352,7 @@ namespace UsedAndReliableCars.Controllers
             return View(viewModel);
         }
 
-        public async Task<IActionResult> FsboSearch( string? year, string? make, CancellationToken cancellationToken )
+        public async Task<IActionResult> FsboSearch(string? year, string? make, CancellationToken cancellationToken)
         {
             var queryParams = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             if (!string.IsNullOrEmpty(year)) queryParams["year"] = year;
@@ -294,5 +368,18 @@ namespace UsedAndReliableCars.Controllers
             var json = await response.Content.ReadAsStringAsync(cancellationToken);
             return Content(json, "application/json");
         }
+    }
+
+    // ── Request model for AskAI ──────────────────────────────────────────────────
+    public class AskAIRequest
+    {
+        public string? Question { get; set; }
+        public string? SelectedCar { get; set; }
+    }
+
+    public class ChatMessage
+    {
+        public string? Role { get; set; }
+        public string? Content { get; set; }
     }
 }
