@@ -2,392 +2,273 @@
 @{
     ViewData["Title"] = "AutoGems.Ai - Find the cheapest and most reliable used cars near you!";
 }
-<div class="">
 
-    <!-- Hero -->
-    <div class="car-Background relative flex w-full items-center justify-center overflow-hidden bg-gray-50 bg-gray-200 pt-32">
-        <div class="absolute inset-0 bg-black/40 backdrop-blur-xs"></div>
+<style>
+    /* ── Step wizard ── */
+    
 
-        <div class="z-10 container mx-auto grid items-center gap-12 px-4 py-16 md:px-10 md:py-32 lg:grid-cols-2 lg:px-32 xl:max-w-6xl">
+  
+</style>
 
-            <!-- LEFT SIDE (Form) -->
-            <div id="bottomSection" class="order-2 rounded-2xl bg-[#EAE0D5] px-10 py-14 shadow-xl lg:order-1">
-                <h1 class="text-4xl font-extrabold text-[#0A0908]">
-                    Find Your Car!
+<div>
+
+    <!-- ═══════════════════════════════════════════════════════════ HERO / STEPS -->
+    <div class="car-Background relative flex w-full items-center justify-center overflow-hidden bg-gray-200">
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+
+        <div class="z-10 container mx-auto grid items-start gap-12 px-4 py-20 md:px-10 lg:grid-cols-2 lg:px-24 xl:max-w-6xl">
+
+            <!-- LEFT: headline + description -->
+            <div class="order-1 pt-8 text-center lg:text-left">
+                <h1 class="text-5xl font-extrabold leading-tight text-white drop-shadow-lg sm:text-6xl">
+                    AutoGems.Ai
                 </h1>
-
-                <p class="mt-6 leading-relaxed text-[#5E503F]">
-                    <span class="font-semibold text-[#22333B]">You want the best!</span>
-                    We want that for you as well. No more guessing whether that car is right for you.
-                    Let us help you find the perfect used and reliable car within your budget.
-                    Listed below are the most reliable used cars according to Consumer Report and Dave Ramsey.
+                <p class="text-gray-200 text-lg drop-shadow-sm">
+                    Real‑time car insights powered by our custom AI agent and live market data.
                 </p>
-                <div class="flex">
+
+                <div class="mt-6 flex flex-wrap justify-center gap-4 lg:justify-start">
                     <a href="https://www.consumerreports.org/cars/best-used-cars-10-top-picks-a8027733372/#used-car-top-picks-under-10000" target="_blank">
-                        <img src="~/images/ConsumerReportLogo.png" alt="Consumer Reports Logo" class="mt-4 h-12 cursor-pointer" />
+                        <img src="~/images/ConsumerReportLogo.png" alt="Consumer Reports Logo" class="h-12 cursor-pointer opacity-90 hover:opacity-100 transition" />
                     </a>
                     <a href="https://www.ramseysolutions.com/insurance/new-car-vs-used-car" target="_blank">
-                        <img src="~/images/RamseyLogo.jpg" alt="Dave Ramsey Logo" class="mt-4 h-12 cursor-pointer" />
+                        <img src="~/images/RamseyLogo.jpg" alt="Dave Ramsey Logo" class="h-12 cursor-pointer opacity-90 hover:opacity-100 transition" />
                     </a>
                 </div>
+                <div class="w-4/5 mx-auto flex flex-row-reverse lg:flex-row-reverse gap-4 items-center justify-center mt-3">
+                    <!-- Backend -->
+                    <div class="rounded-2xl border border-[#C6AC8F]/40 bg-white p-6">
+                        <p class="mb-4 text-xs font-bold uppercase tracking-widest text-[#C6AC8F]">Backend</p>
+                        <div class="flex flex-col gap-2">
+                            <span class="tech-badge">⚙️ ASP.NET Core MVC</span>
+                            <span class="tech-badge">🌐 Microsoft Agent Framework</span>
+                        </div>
+                    </div>
+                    <!-- Frontend -->
+                    <div class="rounded-2xl border border-[#C6AC8F]/40 bg-white p-6">
+                        <p class="mb-4 text-xs font-bold uppercase tracking-widest text-[#C6AC8F]">Frontend</p>
+                        <div class="flex flex-col gap-2">
+                            <span class="tech-badge">🎨 Tailwind CSS</span>
+                            <span class="tech-badge">⚡ Vanilla JavaScript</span>
+                            <span class="tech-badge">🖼️ Razor Views (.cshtml)</span>
+                            <span class="tech-badge">📐 CSS Animations</span>
+                        </div>
+                    </div>
+                    <!-- AI & Data -->
+                    <div class="rounded-2xl border border-[#C6AC8F]/40 bg-white p-6">
+                        <p class="mb-4 text-xs font-bold uppercase tracking-widest text-[#C6AC8F]">AI &amp; Data</p>
+                        <div class="flex flex-col gap-2">
+                            <span class="tech-badge">🤖 ChatGPT Ai Agent</span>
+                            <span class="tech-badge">🚗 MarketCheck API</span>
+                            <span class="tech-badge">📊 Consumer Reports Data</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-                <form method="get" asp-action="FindCars" asp-controller="Home" class="mt-10 space-y-5">
+            <!-- RIGHT: 3-step wizard -->
+            <div class="order-2 flex flex-col gap-5">
+
+                <!-- ── STEP 1 ── -->
+                <div id="step1Card" class="step-card rounded-2xl bg-[#EAE0D5] px-7 py-7 shadow-xl">
+                    <div class="mb-5 flex items-center gap-3">
+                        <div class="step-number active" id="stepNum1">1</div>
+                        <div>
+                            <p class="text-xs font-semibold uppercase tracking-widest text-[#5E503F]">Step 1 of 3</p>
+                            <h2 class="text-xl font-extrabold text-[#0A0908]">Pick Your Price Range &amp; Car</h2>
+                        </div>
+                    </div>
+
                     @{
                         var grouped = Model.UsedCars
                             .GroupBy(c => c.PriceCategory)
                             .OrderBy(g => g.Key);
                     }
 
+                    <div class="flex flex-col gap-3">
                     @foreach (var group in grouped)
                     {
-                        var id = $"group_{group.Key}";
-                        <div class="mb-6 overflow-hidden rounded-lg border">
-
-                            <!-- Accordion Header -->
+                        var id = $"acc_{group.Key}";
+                        <div class="overflow-hidden rounded-xl border border-[#C6AC8F]">
                             <button type="button"
-                                    class="flex w-full items-center justify-between bg-[#22333B]/10 px-4 py-3 transition hover:bg-[#22333B]/20"
+                                    class="flex w-full items-center justify-between bg-[#22333B]/8 px-4 py-3 transition hover:bg-[#22333B]/15"
                                     onclick="toggleAccordion('@id')">
-                                <span class="text-lg font-semibold text-[#22333B]">
-                                    Under $@group.Key.ToString("N0")
-                                </span>
-                                <svg id="@(id)_icon"
-                                     class="h-5 w-5 text-[#5E503F] transition-transform duration-300"
-                                     fill="none" stroke="currentColor" stroke-width="2"
-                                     viewBox="0 0 24 24">
+                                <span class="font-semibold text-[#22333B]">Under $@group.Key.ToString("N0")</span>
+                                <svg id="@(id)_icon" class="h-4 w-4 text-[#5E503F] transition-transform duration-300"
+                                     fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
                                 </svg>
                             </button>
-
-                            <!-- Accordion Content -->
-                            <div id="@id" class="max-h-0 overflow-hidden bg-[#EAE0D5] transition-all duration-300">
-                                <div class="space-y-3 p-4">
+                            <div id="@id" class="accordion-body">
+                                <div class="flex flex-col gap-2 p-3">
                                     @foreach (var car in group)
                                     {
                                         var value = $"{car.Make}|{car.Model}|{car.Year}|{car.PriceCategory}";
-                                        <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-[#C6AC8F] p-3 hover:bg-[#C6AC8F]/20">
-                                            <input type="radio"
-                                                   name="selectedCar"
-                                                   value="@value"
-                                                   class="h-4 w-4 border-[#C6AC8F] focus:ring-2 focus:ring-[#C6AC8F]" />
-                                            <span class="text-sm font-medium text-[#22333B]">
-                                                @car.Make @car.Model (@car.Year)
-                                            </span>
+                                        <input type="radio" class="car-radio" name="selectedCar"
+                                               id="car_@value" value="@value" onchange="onCarSelected(this)" />
+                                        <label for="car_@value" class="car-label">
+                                            <span class="car-dot"></span>
+                                            <span class="text-sm font-medium text-[#22333B]">@car.Make @car.Model (@car.Year)</span>
                                         </label>
                                     }
                                 </div>
                             </div>
-
                         </div>
                     }
-
-                    <button type="submit"
-                            class="w-full rounded-lg bg-[var(--tan)] py-3 font-semibold text-[var(--jet)] transition hover:bg-[var(--brown)] hover:text-[var(--bone)] hover:shadow-md">
-                        Find these cars
-                    </button>
-                </form>
-            </div>
-
-            <!-- RIGHT SIDE -->
-            <div class="order-1 text-center lg:order-2 lg:text-left">
-                <h1 class="text-4xl leading-tight font-extrabold text-white drop-shadow-lg sm:text-5xl">
-                    AutoGems.Ai
-                </h1>
-                <p class="mt-8 mb-12 text-lg text-gray-100 drop-shadow-md">
-                    Find used and reliable cars near you!
-                </p>
-                <div class="flex flex-wrap justify-center gap-4 lg:justify-start">
-                    <a href="#bottomSection"
-                           class="inline-block rounded bg-[var(--tan)] px-8 py-3 text-center text-lg font-semibold
-                        text-[var(--jet)] transition-transform hover:scale-105 hover:bg-[var(--brown)]
-                        hover:text-[var(--bone)] hover:shadow-[0_10px_20px_-10px_black]">
-                        Find My Next Car!
-                    </a>
-                    <a href="#"
-                           class="rounded border border-[#EAE0D5] px-8 py-3 text-lg text-[#EAE0D5]
-                        transition-colors hover:bg-[#EAE0D5] hover:text-[#22333B]">
-                        About our Service
-                    </a>
+                    </div>
                 </div>
-            </div>
 
-        </div>
+                <!-- ── STEP 2 ── -->
+                <div id="step2Card" class="step-card step-locked rounded-2xl bg-[#EAE0D5] px-7 py-7 shadow-xl">
+                    <div class="mb-5 flex items-center gap-3">
+                        <div class="step-number" id="stepNum2">2</div>
+                        <div>
+                            <p class="text-xs font-semibold uppercase tracking-widest text-[#5E503F]">Step 2 of 3</p>
+                            <h2 class="text-xl font-extrabold text-[#0A0908]">How Do You Want to Search?</h2>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <!-- DIY -->
+                        <button class="action-card" id="btnDIY" onclick="selectMode('diy')">
+                            <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-[#22333B]/10">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
+                                     stroke="#22333B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                                </svg>
+                            </div>
+                            <p class="font-bold text-[#0A0908]">Manually Browse Listings</p>
+                            <p class="mt-1 text-xs text-[#5E503F]">See all matching cars in your area and filter on your own.</p>
+                        </button>
+                        <!-- AI -->
+                        <button class="action-card" id="btnAI" onclick="selectMode('ai')">
+                            <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-[#22333B]/10">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="#22333B">
+                                    <path d="M9.107 5.448c.598-1.75 3.016-1.803 3.725-.159l.06.16l.807 2.36a4 4 0 0 0 2.276 2.411l.217.081l2.36.806c1.75.598 1.803 3.016.16 3.725l-.16.06l-2.36.807a4 4 0 0 0-2.412 2.276l-.081.216l-.806 2.361c-.598 1.75-3.016 1.803-3.724.16l-.062-.16l-.806-2.36a4 4 0 0 0-2.276-2.412l-.216-.081l-2.36-.806c-1.751-.598-1.804-3.016-.16-3.724l.16-.062l2.36-.806A4 4 0 0 0 8.22 8.025l.081-.216z"/>
+                                </svg>
+                            </div>
+                            <p class="font-bold text-[#0A0908]">Have our AI agent Help</p>
+                            <p class="mt-1 text-xs text-[#5E503F]">Let Car-oline help you find the best deal for your budget.</p>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ── STEP 3 ── -->
+                <div id="step3Card" class="step-card step-locked rounded-2xl bg-[#EAE0D5] px-7 py-7 shadow-xl">
+                    <div class="mb-5 flex items-center gap-3">
+                        <div class="step-number" id="stepNum3">3</div>
+                        <div>
+                            <p class="text-xs font-semibold uppercase tracking-widest text-[#5E503F]">Step 3 of 3</p>
+                            <h2 class="text-xl font-extrabold text-[#0A0908]" id="step3Heading">Let's Go!</h2>
+                        </div>
+                    </div>
+
+                    <!-- DIY submit -->
+                    <div id="step3DIY" class="hidden">
+                        <p class="mb-4 text-sm text-[#5E503F]">Search live listings for your selected car near you.</p>
+                        <form method="get" asp-action="FindCars" asp-controller="Home" id="findCarsForm">
+                            <input type="hidden" name="selectedCar" id="hiddenSelectedCar" />
+                            <button type="submit"
+                                    class="w-full rounded-xl bg-[#22333B] py-3 font-bold text-[#C6AC8F] shadow transition hover:bg-[#1a2b32] hover:shadow-lg">
+                                Manual Search →
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- AI launch -->
+                    <div id="step3AI" class="hidden">
+                        <p class="mb-4 text-sm text-[#5E503F]">Car-oline will use your selected car and budget to help you find the best deal.</p>
+                        <button id="InitialSearchButton" onclick="openSidebar()"
+                                class="w-full rounded-xl bg-[#22333B] py-3 font-bold text-[#C6AC8F] shadow transition hover:bg-[#1a2b32] hover:shadow-lg">
+                            Open AI Chat →
+                        </button>
+                    </div>
+                </div>
+
+            </div><!-- /wizard col -->
+        </div><!-- /grid -->
 
         <div class="pointer-events-none absolute bottom-0 left-0 h-32 w-full bg-gradient-to-b from-transparent to-[#EAE0D5]"></div>
     </div>
 
 
-    <!-- Feature Strip -->
-    <section class="w-full bg-[#EAE0D5] px-8 py-16">
-        <div class="mx-auto grid max-w-6xl grid-cols-1 gap-10 text-center md:grid-cols-3">
-            <div>
-                <h3 class="mb-2 text-2xl font-bold text-[#22333B]">Fast</h3>
-                <p class="text-[#5E503F]">Find hundreds of used cars at the click of a button</p>
+    <!-- ═══════════════════════════════════════════════════════════ AI SIDEBAR -->
+    <div id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <div id="aiSidebar">
+        <!-- Header -->
+        <div class="flex items-center justify-between bg-[#22333B] px-5 py-4 flex-shrink-0">
+            <div class="flex items-center gap-3">
+                <div class="flex h-9 w-9 items-center justify-center rounded-full bg-[#C6AC8F]">
+                    <svg viewBox="0 0 24 24" height="16" width="16" fill="#22333B">
+                        <path d="M9.107 5.448c.598-1.75 3.016-1.803 3.725-.159l.06.16l.807 2.36a4 4 0 0 0 2.276 2.411l.217.081l2.36.806c1.75.598 1.803 3.016.16 3.725l-.16.06l-2.36.807a4 4 0 0 0-2.412 2.276l-.081.216l-.806 2.361c-.598 1.75-3.016 1.803-3.724.16l-.062-.16l-.806-2.36a4 4 0 0 0-2.276-2.412l-.216-.081l-2.36-.806c-1.751-.598-1.804-3.016-.16-3.724l.16-.062l2.36-.806A4 4 0 0 0 8.22 8.025l.081-.216z"/>
+                    </svg>
+                </div>
+                <div>
+                    <p class="font-bold text-[#EAE0D5]">Car-oline</p>
+                    <p class="text-xs text-[#C6AC8F]">AutoGems AI · Powered by real market data</p>
+                </div>
             </div>
-            <div>
-                <h3 class="mb-2 text-2xl font-bold text-[#22333B]">Accurate</h3>
-                <p class="text-[#5E503F]">Find exactly what you're searching for</p>
-            </div>
-            <div>
-                <h3 class="mb-2 text-2xl font-bold text-[#22333B]">Only The Best</h3>
-                <p class="text-[#5E503F]">We do our research so that you will only find the best used cars</p>
-            </div>
-        </div>
-    </section>
-
-
-    <!-- AI Section -->
-    <section class="line-bg relative flex min-h-screen w-screen flex-col items-center justify-start px-8 py-24">
-
-        <div class="pointer-events-none absolute top-0 left-0 h-32 w-full bg-gradient-to-t from-transparent to-[#EAE0D5]"></div>
-        <div class="pointer-events-none absolute bottom-0 left-0 h-32 w-full bg-gradient-to-b from-transparent to-[#EAE0D5]"></div>
-
-        <!-- Heading -->
-        <div class="z-10 text-center">
-            <h3 class="mb-2 text-3xl font-bold text-white">AI Car Assistant</h3>
-            <p class="text-gray-200">Ask our AI anything about the used cars in our inventory</p>
-
-            <button id="askAiButton"
-                    class="mt-6 inline-flex items-center gap-2 rounded-full bg-[var(--tan)] px-6 py-3
-                font-semibold text-[var(--jet)] shadow-lg transition
-                hover:bg-[var(--brown)] hover:text-[var(--bone)] hover:shadow-xl">
-                <svg viewBox="0 0 24 24" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
-                    <g fill="none">
-                        <path d="m12.594 23.258l-.012.002l-.071.035l-.02.004l-.014-.004l-.071-.036q-.016-.004-.024.006l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.016-.018m.264-.113l-.014.002l-.184.093l-.01.01l-.003.011l.018.43l.005.012l.008.008l.201.092q.019.005.029-.008l.004-.014l-.034-.614q-.005-.019-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.003-.011l.018-.43l-.003-.012l-.01-.01z"></path>
-                        <path d="M9.107 5.448c.598-1.75 3.016-1.803 3.725-.159l.06.16l.807 2.36a4 4 0 0 0 2.276 2.411l.217.081l2.36.806c1.75.598 1.803 3.016.16 3.725l-.16.06l-2.36.807a4 4 0 0 0-2.412 2.276l-.081.216l-.806 2.361c-.598 1.75-3.016 1.803-3.724.16l-.062-.16l-.806-2.36a4 4 0 0 0-2.276-2.412l-.216-.081l-2.36-.806c-1.751-.598-1.804-3.016-.16-3.724l.16-.062l2.36-.806A4 4 0 0 0 8.22 8.025l.081-.216zM11 6.094l-.806 2.36a6 6 0 0 1-3.49 3.649l-.25.091l-2.36.806l2.36.806a6 6 0 0 1 3.649 3.49l.091.25l.806 2.36l.806-2.36a6 6 0 0 1 3.49-3.649l.25-.09l2.36-.807l-2.36-.806a6 6 0 0 1-3.649-3.49l-.09-.25zM19 2a1 1 0 0 1 .898.56l.048.117l.35 1.026l1.027.35a1 1 0 0 1 .118 1.845l-.118.048l-1.026.35l-.35 1.027a1 1 0 0 1-1.845.117l-.048-.117l-.35-1.026l-1.027-.35a1 1 0 0 1-.118-1.845l.118-.048l1.026-.35l.35-1.027A1 1 0 0 1 19 2"
-                              fill="currentColor"></path>
-                    </g>
+            <button onclick="closeSidebar()" class="rounded-full p-1 text-[#C6AC8F] transition hover:bg-white/10 hover:text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
                 </svg>
-                Ask Our AI for Help
             </button>
         </div>
 
-        <!-- Chat Box -->
-        <div id="aiChatbox"
-             class="z-10 mx-auto mt-10 hidden w-full max-w-2xl translate-y-4 opacity-0 transition-all duration-500">
+        <!-- Selected car context badge -->
+        <div id="contextBadge" class="hidden items-center gap-2 border-b border-white/10 bg-[#22333B]/60 px-5 py-2 text-xs text-[#C6AC8F]">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" stroke="currentColor"
+                 stroke-width="2" viewBox="0 0 24 24" class="flex-shrink-0">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+            <span id="contextBadgeText">Searching for: —</span>
+        </div>
 
-            <div class="overflow-hidden rounded-2xl border border-[#C6AC8F] bg-[#EAE0D5] shadow-2xl">
-
-                <!-- Chat Header -->
-                <div class="flex items-center justify-between bg-[#22333B] px-6 py-4">
-                    <div class="flex items-center gap-3">
-                        <div class="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--tan)]">
-                            <svg viewBox="0 0 24 24" height="16" width="16" fill="currentColor" class="text-[#22333B]">
-                                <path d="M9.107 5.448c.598-1.75 3.016-1.803 3.725-.159l.06.16l.807 2.36a4 4 0 0 0 2.276 2.411l.217.081l2.36.806c1.75.598 1.803 3.016.16 3.725l-.16.06l-2.36.807a4 4 0 0 0-2.412 2.276l-.081.216l-.806 2.361c-.598 1.75-3.016 1.803-3.724.16l-.062-.16l-.806-2.36a4 4 0 0 0-2.276-2.412l-.216-.081l-2.36-.806c-1.751-.598-1.804-3.016-.16-3.724l.16-.062l2.36-.806A4 4 0 0 0 8.22 8.025l.081-.216z" />
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="font-bold text-[#EAE0D5]">AutoGems AI</p>
-                            <p class="text-xs text-[#C6AC8F]">Powered by real market data</p>
-                        </div>
-                    </div>
-                    <button id="closeAiChat"
-                            class="rounded-full p-1 text-[#C6AC8F] transition hover:bg-white/10 hover:text-white">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                             fill="none" stroke="currentColor" stroke-width="2"
-                             stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="18" y1="6" x2="6" y2="18" />
-                            <line x1="6" y1="6" x2="18" y2="18" />
-                        </svg>
-                    </button>
+        <!-- Messages -->
+        <div id="sidebarMessages"
+             class="flex flex-1 flex-col gap-4 overflow-y-auto px-5 py-5 scroll-smooth"
+             style="background: #1e2f37;">
+            <div class="flex items-start gap-3">
+                <div class="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#22333B]">
+                    <svg viewBox="0 0 24 24" height="13" width="13" fill="#C6AC8F">
+                        <path d="M9.107 5.448c.598-1.75 3.016-1.803 3.725-.159l.06.16l.807 2.36a4 4 0 0 0 2.276 2.411l.217.081l2.36.806c1.75.598 1.803 3.016.16 3.725l-.16.06l-2.36.807a4 4 0 0 0-2.412 2.276l-.081.216l-.806 2.361c-.598 1.75-3.016 1.803-3.724.16l-.062-.16l-.806-2.36a4 4 0 0 0-2.276-2.412l-.216-.081l-2.36-.806c-1.751-.598-1.804-3.016-.16-3.724l.16-.062l2.36-.806A4 4 0 0 0 8.22 8.025l.081-.216z"/>
+                    </svg>
                 </div>
-
-                <!-- Message List -->
-                <div id="messageList"
-                     class="flex h-80 flex-col gap-4 overflow-y-auto bg-[#f5ede3] px-6 py-4 scroll-smooth">
-                    <div class="flex items-start gap-3">
-                        <div class="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#22333B]">
-                            <svg viewBox="0 0 24 24" height="14" width="14" fill="currentColor" class="text-[var(--tan)]">
-                                <path d="M9.107 5.448c.598-1.75 3.016-1.803 3.725-.159l.06.16l.807 2.36a4 4 0 0 0 2.276 2.411l.217.081l2.36.806c1.75.598 1.803 3.016.16 3.725l-.16.06l-2.36.807a4 4 0 0 0-2.412 2.276l-.081.216l-.806 2.361c-.598 1.75-3.016 1.803-3.724.16l-.062-.16l-.806-2.36a4 4 0 0 0-2.276-2.412l-.216-.081l-2.36-.806c-1.751-.598-1.804-3.016-.16-3.724l.16-.062l2.36-.806A4 4 0 0 0 8.22 8.025l.081-.216z" />
-                            </svg>
-                        </div>
-                        <div class="max-w-[80%] rounded-2xl rounded-tl-none bg-[#22333B] px-4 py-3 text-sm leading-relaxed text-[#EAE0D5] shadow-sm">
-                            Hi! I'm your AutoGems AI assistant. Ask me anything about used cars — pricing, reliability, what's in stock, and more!
-                        </div>
-                    </div>
+                <div class="max-w-[85%] rounded-2xl rounded-tl-none bg-[#22333B] px-4 py-3 text-sm leading-relaxed text-[#EAE0D5] shadow">
+                    Hi! I'm Car-oline, your AutoGems AI assistant. I already know the car and budget you picked — ask me about pricing, reliability, what to look for, or to find the best deals near you!
                 </div>
-
-                <!-- Input Area -->
-                <div class="flex items-center gap-3 border-t border-[#C6AC8F] bg-[#EAE0D5] px-4 py-4">
-                    <input id="chatInput"
-                           type="text"
-                           placeholder="Ask about a car, price range, mileage..."
-                           class="flex-1 rounded-xl border border-[#C6AC8F] bg-[#f5ede3] px-4 py-3 text-sm
-                    text-[#22333B] placeholder-[#C6AC8F] outline-none transition
-                    focus:border-[#5E503F] focus:ring-2 focus:ring-[#5E503F]/30" />
-                    <button id="sendBtn"
-                            class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl
-                        bg-[#22333B] text-[var(--tan)] shadow transition
-                        hover:bg-[#22333B]/80 disabled:cursor-not-allowed disabled:opacity-50">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                             fill="none" stroke="currentColor" stroke-width="2.5"
-                             stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="22" y1="2" x2="11" y2="13" />
-                            <polygon points="22 2 15 22 11 13 2 9 22 2" />
-                        </svg>
-                    </button>
-                </div>
-
             </div>
         </div>
 
-    </section>
+        <!-- Input -->
+        <div class="flex items-center gap-3 border-t border-white/10 bg-[#22333B] px-4 py-4 flex-shrink-0">
+            <input id="sidebarInput"
+                   type="text"
+                   placeholder="Ask about pricing, reliability, mileage..."
+                   class="flex-1 rounded-xl border border-[#C6AC8F]/30 bg-[#1e2f37] px-4 py-3 text-sm
+                          text-[#EAE0D5] placeholder-[#5E7A85] outline-none transition
+                          focus:border-[#C6AC8F] focus:ring-2 focus:ring-[#C6AC8F]/20" />
+            <button id="sidebarSendBtn"
+                    class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl
+                           bg-[#C6AC8F] text-[#22333B] shadow transition
+                           hover:bg-[#b89e7e] disabled:cursor-not-allowed disabled:opacity-50">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor" stroke-width="2.5"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"/>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                </svg>
+            </button>
+        </div>
+    </div>
 
 </div>
 
 <script>
-    // ── Open / Close ─────────────────────────────────────────────────────────────
-    const askBtn   = document.getElementById("askAiButton");
-    const closeBtn = document.getElementById("closeAiChat");
-    const box      = document.getElementById("aiChatbox");
-
-    function openChat() {
-        box.classList.remove("hidden");
-        requestAnimationFrame(() => {
-            box.classList.remove("opacity-0", "translate-y-4");
-            box.classList.add("opacity-100", "translate-y-0");
-        });
-    }
-
-    function closeChat() {
-        box.classList.remove("opacity-100", "translate-y-0");
-        box.classList.add("opacity-0", "translate-y-4");
-        setTimeout(() => box.classList.add("hidden"), 300);
-    }
-
-    askBtn.addEventListener("click", openChat);
-    closeBtn.addEventListener("click", closeChat);
-
-    // ── Markdown parser ──────────────────────────────────────────────────────────
-    function parseMarkdown(text) {
-        return text
-            // Bold
-            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-            // Italic (single * not preceded/followed by another *)
-            .replace(/(?<!\*)\*(?!\*)(.*?)(?<!\*)\*(?!\*)/g, '<em>$1</em>')
-            // Links [label](url)
-            .replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g,
-                '<a href="$2" target="_blank" rel="noopener noreferrer" ' +
-                'class="underline text-[#C6AC8F] hover:text-white transition-colors">$1</a>')
-            // Unordered list items: - item
-            .replace(/^- (.+)$/gm, '<li class="ml-4 list-disc">$1</li>')
-            // Numbered list items: 1. item
-            .replace(/^\d+\. (.+)$/gm, '<li class="ml-4 list-decimal">$1</li>')
-            // Wrap runs of <li> in a <ul>
-            .replace(/(<li[^>]*>[\s\S]*?<\/li>\n?)+/g,
-                match => '<ul class="mt-2 mb-2 space-y-1">' + match + '</ul>')
-            // Line breaks
-            .replace(/\n/g, '<br />');
-    }
-
-    // ── Message rendering ────────────────────────────────────────────────────────
-    const msgList = document.getElementById("messageList");
-
-    function appendMessage(text, role) {
-        const isUser = role === "user";
-
-        const wrapper = document.createElement("div");
-        wrapper.className = "flex items-start gap-3" + (isUser ? " flex-row-reverse" : "");
-
-        const avatar = document.createElement("div");
-        avatar.className = "mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full " +
-            (isUser ? "bg-[var(--tan)]" : "bg-[#22333B]");
-        avatar.innerHTML = isUser
-            ? `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                   fill="none" stroke="currentColor" stroke-width="2"
-                   stroke-linecap="round" stroke-linejoin="round" class="text-[#22333B]">
-                   <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                   <circle cx="12" cy="7" r="4"/>
-               </svg>`
-            : `<svg viewBox="0 0 24 24" height="14" width="14" fill="currentColor" class="text-[var(--tan)]">
-                   <path d="M9.107 5.448c.598-1.75 3.016-1.803 3.725-.159l.06.16l.807 2.36a4 4 0 0 0 2.276 2.411l.217.081l2.36.806c1.75.598 1.803 3.016.16 3.725l-.16.06l-2.36.807a4 4 0 0 0-2.412 2.276l-.081.216l-.806 2.361c-.598 1.75-3.016 1.803-3.724.16l-.062-.16l-.806-2.36a4 4 0 0 0-2.276-2.412l-.216-.081l-2.36-.806c-1.751-.598-1.804-3.016-.16-3.724l.16-.062l2.36-.806A4 4 0 0 0 8.22 8.025l.081-.216z"/>
-               </svg>`;
-
-        const bubble = document.createElement("div");
-        bubble.className = "max-w-[80%] rounded-2xl px-4 py-3 text-sm shadow-sm leading-relaxed " +
-            (isUser
-                ? "rounded-tr-none bg-[var(--tan)] text-[var(--jet)]"
-                : "rounded-tl-none bg-[#22333B] text-[#EAE0D5]");
-
-        // User input stays plain text (XSS safe); AI responses get markdown rendered
-        if (isUser) {
-            bubble.textContent = text;
-        } else {
-            bubble.innerHTML = parseMarkdown(text);
-        }
-
-        wrapper.appendChild(avatar);
-        wrapper.appendChild(bubble);
-        msgList.appendChild(wrapper);
-        msgList.scrollTop = msgList.scrollHeight;
-    }
-
-    // ── Typing indicator ─────────────────────────────────────────────────────────
-    function appendTyping() {
-        const wrapper = document.createElement("div");
-        wrapper.id = "typingIndicator";
-        wrapper.className = "flex items-start gap-3";
-        wrapper.innerHTML = `
-            <div class="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#22333B]">
-                <svg viewBox="0 0 24 24" height="14" width="14" fill="currentColor" class="text-[var(--tan)]">
-                    <path d="M9.107 5.448c.598-1.75 3.016-1.803 3.725-.159l.06.16l.807 2.36a4 4 0 0 0 2.276 2.411l.217.081l2.36.806c1.75.598 1.803 3.016.16 3.725l-.16.06l-2.36.807a4 4 0 0 0-2.412 2.276l-.081.216l-.806 2.361c-.598 1.75-3.016 1.803-3.724.16l-.062-.16l-.806-2.36a4 4 0 0 0-2.276-2.412l-.216-.081l-2.36-.806c-1.751-.598-1.804-3.016-.16-3.724l.16-.062l2.36-.806A4 4 0 0 0 8.22 8.025l.081-.216z"/>
-                </svg>
-            </div>
-            <div class="rounded-2xl rounded-tl-none bg-[#22333B] px-4 py-3 shadow-sm">
-                <div class="flex gap-1">
-                    <span class="h-2 w-2 animate-bounce rounded-full bg-[#C6AC8F]" style="animation-delay:0ms"></span>
-                    <span class="h-2 w-2 animate-bounce rounded-full bg-[#C6AC8F]" style="animation-delay:150ms"></span>
-                    <span class="h-2 w-2 animate-bounce rounded-full bg-[#C6AC8F]" style="animation-delay:300ms"></span>
-                </div>
-            </div>`;
-        msgList.appendChild(wrapper);
-        msgList.scrollTop = msgList.scrollHeight;
-    }
-
-    function removeTyping() {
-        document.getElementById("typingIndicator")?.remove();
-    }
-
-    // ── Send message ─────────────────────────────────────────────────────────────
-    const input   = document.getElementById("chatInput");
-    const sendBtn = document.getElementById("sendBtn");
-
-    async function sendMessage() {
-        const selectedCarVal = document.querySelector('input[name="selectedCar"]:checked')?.value ?? null;
-
-        const question = input.value.trim();
-        if (!question) return;
-
-        appendMessage(question, "user");
-        input.value = "";
-        sendBtn.disabled = true;
-        appendTyping();
-
-        try {
-            // include currently selected car so AI can use the max price category
-            const response = await fetch("/Home/AskAI", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ Question: question, SelectedCar: selectedCarVal })
-            });
-            const data = await response.json();
-            removeTyping();
-            appendMessage(data.answer ?? "Sorry, I couldn't get a response.", "ai");
-        } catch (err) {
-            removeTyping();
-            appendMessage("Something went wrong. Please try again.", "ai");
-        } finally {
-            sendBtn.disabled = false;
-            input.focus();
-        }
-    }
-
-    sendBtn.addEventListener("click", sendMessage);
-    input.addEventListener("keydown", e => {
-        if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-            sendMessage();
-        }
-    });
+    // ── State ────────────────────────────────────────────────────────────────────
+    let selectedCarValue = null;
+    let selectedMode = null;   // 'diy' | 'ai'
 
     // ── Accordion ────────────────────────────────────────────────────────────────
     function toggleAccordion(id) {
@@ -402,12 +283,221 @@
         }
     }
 
-    document.querySelector('[href="#bottomSection"]').addEventListener("click", () => {
-        document.getElementById("bottomSection").scrollIntoView({ behavior: "smooth" });
-        document.querySelectorAll('[id^="group_"]').forEach(content => {
-            content.style.maxHeight = content.scrollHeight + "px";
-            const icon = document.getElementById(content.id + "_icon");
-            if (icon) icon.style.transform = "rotate(180deg)";
-        });
+    // ── Step unlock helpers ───────────────────────────────────────────────────────
+    function unlock(stepNum) {
+        const card = document.getElementById(`step${stepNum}Card`);
+        const num  = document.getElementById(`stepNum${stepNum}`);
+        card.classList.remove("step-locked");
+        num.classList.add("active");
+        card.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+
+    // ── Step 1: car selected ──────────────────────────────────────────────────────
+    function onCarSelected(radio) {
+        selectedCarValue = radio.value;
+        document.getElementById("hiddenSelectedCar").value = selectedCarValue;
+
+        // Unlock step 2 if not already unlocked
+        const step2 = document.getElementById("step2Card");
+        if (step2.classList.contains("step-locked")) {
+            unlock(2);
+        }
+
+        // Reset step 2 selections if car changes
+        document.getElementById("btnDIY").classList.remove("selected");
+        document.getElementById("btnAI").classList.remove("selected");
+        selectedMode = null;
+        document.getElementById("step3DIY").classList.add("hidden");
+        document.getElementById("step3AI").classList.add("hidden");
+        document.getElementById("step3Card").classList.add("step-locked");
+        document.getElementById("stepNum3").classList.remove("active");
+    }
+
+    // ── Step 2: mode selected ─────────────────────────────────────────────────────
+    function selectMode(mode) {
+        selectedMode = mode;
+        document.getElementById("btnDIY").classList.toggle("selected", mode === "diy");
+        document.getElementById("btnAI").classList.toggle("selected", mode === "ai");
+
+        const step3 = document.getElementById("step3Card");
+        step3.classList.remove("step-locked");
+        document.getElementById("stepNum3").classList.add("active");
+
+        if (mode === "diy") {
+            document.getElementById("step3Heading").textContent = "Search Live Listings";
+            document.getElementById("step3DIY").classList.remove("hidden");
+            document.getElementById("step3AI").classList.add("hidden");
+        } else {
+            document.getElementById("step3Heading").textContent = "Chat with Car-oline";
+            document.getElementById("step3AI").classList.remove("hidden");
+            document.getElementById("step3DIY").classList.add("hidden");
+        }
+
+        step3.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+
+    // ── Sidebar open/close ────────────────────────────────────────────────────────
+    function openSidebar() {
+        document.getElementById("aiSidebar").classList.add("open");
+        document.getElementById("sidebarOverlay").classList.add("visible");
+        document.body.style.overflow = "hidden";
+
+        // Show context badge
+        if (selectedCarValue) {
+            const parts = selectedCarValue.split("|");
+            const badge = document.getElementById("contextBadge");
+            badge.classList.remove("hidden");
+            badge.classList.add("flex");
+            document.getElementById("contextBadgeText").textContent =
+                `${parts[0]} ${parts[1]} (${parts[2]}) · Under $${Number(parts[3]).toLocaleString()}`;
+        }
+
+        setTimeout(() => document.getElementById("sidebarInput").focus(), 400);
+    }
+
+    function closeSidebar() {
+        document.getElementById("aiSidebar").classList.remove("open");
+        document.getElementById("sidebarOverlay").classList.remove("visible");
+        document.body.style.overflow = "";
+    }
+
+    // ── Markdown parser ───────────────────────────────────────────────────────────
+    function parseMarkdown(text) {
+        return text
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/(?<!\*)\*(?!\*)(.*?)(?<!\*)\*(?!\*)/g, '<em>$1</em>')
+            .replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g,
+                '<a href="$2" target="_blank" rel="noopener noreferrer" ' +
+                'class="underline text-[#C6AC8F] hover:text-white transition-colors">$1</a>')
+            .replace(/^- (.+)$/gm, '<li class="ml-4 list-disc">$1</li>')
+            .replace(/^\d+\. (.+)$/gm, '<li class="ml-4 list-decimal">$1</li>')
+            .replace(/(<li[^>]*>[\s\S]*?<\/li>\n?)+/g,
+                match => '<ul class="mt-2 mb-2 space-y-1">' + match + '</ul>')
+            .replace(/\n/g, '<br />');
+    }
+
+    // ── Message rendering ─────────────────────────────────────────────────────────
+    const msgList = document.getElementById("sidebarMessages");
+
+    function appendSidebarMessage(text, role) {
+        const isUser = role === "user";
+        const wrapper = document.createElement("div");
+        wrapper.className = "flex items-start gap-3" + (isUser ? " flex-row-reverse" : "");
+
+        const avatar = document.createElement("div");
+        avatar.className = "mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full " +
+            (isUser ? "bg-[#C6AC8F]" : "bg-[#22333B]");
+        avatar.innerHTML = isUser
+            ? `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
+                   fill="none" stroke="#22333B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                   <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                   <circle cx="12" cy="7" r="4"/>
+               </svg>`
+            : `<svg viewBox="0 0 24 24" height="13" width="13" fill="#C6AC8F">
+                   <path d="M9.107 5.448c.598-1.75 3.016-1.803 3.725-.159l.06.16l.807 2.36a4 4 0 0 0 2.276 2.411l.217.081l2.36.806c1.75.598 1.803 3.016.16 3.725l-.16.06l-2.36.807a4 4 0 0 0-2.412 2.276l-.081.216l-.806 2.361c-.598 1.75-3.016 1.803-3.724.16l-.062-.16l-.806-2.36a4 4 0 0 0-2.276-2.412l-.216-.081l-2.36-.806c-1.751-.598-1.804-3.016-.16-3.724l.16-.062l2.36-.806A4 4 0 0 0 8.22 8.025l.081-.216z"/>
+               </svg>`;
+
+        const bubble = document.createElement("div");
+        bubble.className = "max-w-[85%] rounded-2xl px-4 py-3 text-sm shadow leading-relaxed " +
+            (isUser
+                ? "rounded-tr-none bg-[#C6AC8F] text-[#22333B]"
+                : "rounded-tl-none bg-[#22333B] text-[#EAE0D5]");
+
+        if (isUser) { bubble.textContent = text; }
+        else         { bubble.innerHTML = parseMarkdown(text); }
+
+        wrapper.appendChild(avatar);
+        wrapper.appendChild(bubble);
+        msgList.appendChild(wrapper);
+        msgList.scrollTop = msgList.scrollHeight;
+    }
+
+    function appendTyping() {
+        const wrapper = document.createElement("div");
+        wrapper.id = "typingIndicator";
+        wrapper.className = "flex items-start gap-3";
+        wrapper.innerHTML = `
+            <div class="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#22333B]">
+                <svg viewBox="0 0 24 24" height="13" width="13" fill="#C6AC8F">
+                    <path d="M9.107 5.448c.598-1.75 3.016-1.803 3.725-.159l.06.16l.807 2.36a4 4 0 0 0 2.276 2.411l.217.081l2.36.806c1.75.598 1.803 3.016.16 3.725l-.16.06l-2.36.807a4 4 0 0 0-2.412 2.276l-.081.216l-.806 2.361c-.598 1.75-3.016 1.803-3.724.16l-.062-.16l-.806-2.36a4 4 0 0 0-2.276-2.412l-.216-.081l-2.36-.806c-1.751-.598-1.804-3.016-.16-3.724l.16-.062l2.36-.806A4 4 0 0 0 8.22 8.025l.081-.216z"/>
+                </svg>
+            </div>
+            <div class="rounded-2xl rounded-tl-none bg-[#22333B] px-4 py-3 shadow">
+                <div class="flex gap-1">
+                    <span class="dot h-2 w-2 rounded-full bg-[#C6AC8F]"></span>
+                    <span class="dot h-2 w-2 rounded-full bg-[#C6AC8F]"></span>
+                    <span class="dot h-2 w-2 rounded-full bg-[#C6AC8F]"></span>
+                </div>
+            </div>`;
+        msgList.appendChild(wrapper);
+        msgList.scrollTop = msgList.scrollHeight;
+    }
+
+    function removeTyping() { document.getElementById("typingIndicator")?.remove(); }
+
+    // ── Send message ──────────────────────────────────────────────────────────────
+    const sidebarInput   = document.getElementById("sidebarInput");
+    const sidebarSendBtn = document.getElementById("sidebarSendBtn");
+
+    async function sendSidebarMessage() {
+        const question = sidebarInput.value.trim();
+        if (!question) return;
+
+        appendSidebarMessage(question, "user");
+        sidebarInput.value = "";
+        sidebarSendBtn.disabled = true;
+        appendTyping();
+
+        try {
+            const response = await fetch("/Home/AskAI", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ Question: question, SelectedCar: selectedCarValue })
+            });
+            const data = await response.json();
+            removeTyping();
+            appendSidebarMessage(data.answer ?? "Sorry, I couldn't get a response.", "ai");
+        } catch {
+            removeTyping();
+            appendSidebarMessage("Something went wrong. Please try again.", "ai");
+        } finally {
+            sidebarSendBtn.disabled = false;
+            sidebarInput.focus();
+        }
+    }
+
+    async function sendInitialMessage() {
+        const question = "Please find me the best deal for this car."
+       appendSidebarMessage(question, "user");
+        sidebarInput.value = "";
+        sidebarSendBtn.disabled = true;
+        appendTyping();
+        try {
+            const response = await fetch("/Home/AskAI", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ Question: question, SelectedCar: selectedCarValue })
+            });
+            const data = await response.json();
+            removeTyping();
+            appendSidebarMessage(data.answer ?? "Sorry, I couldn't get a response.", "ai");
+        } catch {
+            removeTyping();
+            appendSidebarMessage("Something went wrong. Please try again.", "ai");
+        } finally {
+            sidebarSendBtn.disabled = false;
+            sidebarInput.focus();
+        }
+    }
+
+    sidebarSendBtn.addEventListener("click", sendSidebarMessage);
+    InitialSearchButton.addEventListener("click", sendInitialMessage);
+    sidebarInput.addEventListener("keydown", e => {
+        if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendSidebarMessage(); }
+    });
+
+    // Close sidebar on Escape
+    document.addEventListener("keydown", e => {
+        if (e.key === "Escape") closeSidebar();
     });
 </script>

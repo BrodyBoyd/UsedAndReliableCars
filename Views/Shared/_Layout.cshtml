@@ -1,125 +1,221 @@
 ﻿<!DOCTYPE html>
-
 <html>
 <head>
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>@ViewBag.Title</title>
     <link rel="stylesheet" href="~/css/output.css" asp-append-version="true" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fjalla+One&family=Fugaz+One&family=Luckiest+Guy&display=swap" rel="stylesheet">
+
+    <style>
+        /* ── Navbar ── */
+        #navbar {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 95vw;
+            max-width: 1440px;
+            min-width: 320px;
+            z-index: 50;
+            margin-top: 0.75rem;
+        }
+
+        #navbar-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 3.5rem;
+            padding: 0 1.5rem;
+            background: rgba(10, 9, 8, 0.72);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(198, 172, 143, 0.2);
+            border-radius: 9999px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* Desktop links */
+        .nav-link {
+            position: relative;
+            font-size: 0.875rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            color: #C6AC8F;
+            text-decoration: none;
+            padding: 0.25rem 0;
+            transition: color 0.2s ease;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1.5px;
+            background: #C6AC8F;
+            transition: width 0.25s ease;
+        }
+        .nav-link:hover { color: #EAE0D5; }
+        .nav-link:hover::after { width: 100%; }
+
+        /* Login pill */
+        .nav-login {
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            color: #22333B;
+            background: #C6AC8F;
+            border-radius: 9999px;
+            padding: 0.35rem 1.1rem;
+            text-decoration: none;
+            transition: background 0.2s ease, transform 0.15s ease;
+            white-space: nowrap;
+        }
+        .nav-login:hover {
+            background: #EAE0D5;
+            transform: translateY(-1px);
+        }
+
+        /* ── Mobile drawer ── */
+        #mobile-drawer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 49;
+            display: flex;
+            flex-direction: column;
+            background: rgba(10, 9, 8, 0.97);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            transform: translateY(-100%);
+            transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+            padding: 6rem 2.5rem 3rem;
+        }
+        #mobile-drawer.open {
+            transform: translateY(0);
+        }
+        .mobile-nav-link {
+            display: block;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #EAE0D5;
+            text-decoration: none;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(198,172,143,0.15);
+            letter-spacing: 0.02em;
+            transition: color 0.2s ease, padding-left 0.2s ease;
+        }
+        .mobile-nav-link:hover {
+            color: #C6AC8F;
+            padding-left: 0.5rem;
+        }
+
+        /* Hamburger icon lines */
+        .ham-line {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: #C6AC8F;
+            border-radius: 2px;
+            transition: transform 0.3s ease, opacity 0.2s ease;
+            transform-origin: center;
+        }
+        #hamburger.open .ham-line:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+        #hamburger.open .ham-line:nth-child(2) { opacity: 0; transform: scaleX(0); }
+        #hamburger.open .ham-line:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+    </style>
 </head>
+
 <body class="fjalla-one-regular m-0 p-0 flex min-h-screen flex-col">
-    <nav data-text-bright data-bg="charcoal"
-         class="group absolute fixed top-0 left-1/2 z-50 mx-0 mt-2 mb-12 h-16 w-[95vw]
-            max-w-[1440px] min-w-[380px] -translate-x-1/2 rounded-full bg-[#0A0908]/70 p-4
-            text-[#EAE0D5] shadow
-            shadow-[0_10px_20px_-10px_black]
-            ring-2
-            ring-[#C6AC8F]/40 backdrop-blur-md md:flex">
 
-        <div class="absolute top-1/2 right-8 -translate-y-1/2 cursor-pointer">Login</div>
+    <!-- ═══════════════════════════════════════════ NAVBAR -->
+    <div id="navbar">
+        <div id="navbar-inner">
 
-        <input type="checkbox" id="navbar__control"
-               class="absolute top-4 left-4 z-10 h-8 w-8 opacity-0 md:hidden" />
-
-        <div class="absolute top-1/2 left-1/2 m-0
-                flex w-fit -translate-1/2 transform items-center rounded-full
-                md:left-0 md:left-4 md:mr-4 md:translate-x-0">
-            <a asp-controller="Home" asp-action="Index">
-                <span class="mr-4 ml-2 cursor-pointer font-bold text-[var(--tan)] text-[clamp(1.1rem,calc(2vw_+_0.1rem),2rem)]">
-                    AutoGems.ai
-                </span>
+            <!-- Logo -->
+            <a asp-controller="Home" asp-action="Index"
+               class="text-[var(--tan)] font-bold text-xl tracking-wide hover:text-[#EAE0D5] transition-colors no-underline">
+                AutoGems.ai
             </a>
+
+            <!-- Desktop links (hidden on mobile) -->
+            <ul class="hidden md:flex items-center gap-8 list-none m-0 p-0">
+                <li><a asp-controller="Home" asp-action="Index" class="nav-link">Home</a></li>
+                <li><a asp-controller="Home" asp-action="About" class="nav-link">About Us</a></li>
+                <li><a asp-controller="Home" asp-action="Contact" class="nav-link">Contact</a></li>
+            </ul>
+
+            <!-- Right side: Login + hamburger -->
+            <div class="flex items-center gap-4">
+
+                <!-- Hamburger (mobile only) -->
+                <button id="hamburger"
+                        class="flex md:hidden flex-col justify-center gap-[5px] w-9 h-9 rounded-full
+                               border border-[#C6AC8F]/30 items-center bg-transparent cursor-pointer
+                               transition hover:border-[#C6AC8F]/60"
+                        onclick="toggleMobileMenu()"
+                        aria-label="Toggle menu">
+                    <span class="ham-line"></span>
+                    <span class="ham-line"></span>
+                    <span class="ham-line"></span>
+                </button>
+            </div>
+
         </div>
+    </div>
 
-        <div data-info="OPEN MENU ICON" class="relative h-8 w-8 cursor-pointer group-has-checked:hidden md:hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24">
-                <g fill="#fff" stroke-width="0.5" stroke="#fff">
-                    <path d="M8 6.983a1 1 0 1 0 0 2h8a1 1 0 1 0 0-2zM7 12a1 1 0 0 1 1-1h8a1 1 0 1 1 0 2H8a1 1 0 0 1-1-1m1 3.017a1 1 0 1 0 0 2h8a1 1 0 1 0 0-2z" />
-                    <path fill-rule="evenodd" d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12S6.477 2 12 2s10 4.477 10 10m-2 0a8 8 0 1 1-16 0a8 8 0 0 1 16 0" clip-rule="evenodd" />
-                </g>
-            </svg>
+    <!-- ═══════════════════════════════════════════ MOBILE DRAWER -->
+    <div id="mobile-drawer" aria-hidden="true">
+        <a asp-controller="Home" asp-action="Index" class="mobile-nav-link" onclick="closeMobileMenu()">Home</a>
+        <a asp-controller="Home" asp-action="About" class="mobile-nav-link" onclick="closeMobileMenu()">About Us</a>
+        <a asp-controller="Home" asp-action="Contact" class="mobile-nav-link" onclick="closeMobileMenu()">Contact</a>
+
+        <div class="mt-auto pt-8">
         </div>
-
-        <div data-info="CLOSE MENU ICON" class="relative hidden h-8 w-8 cursor-pointer group-has-checked:block md:!hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24">
-                <path fill="none" stroke="currentColor" stroke-dasharray="12" stroke-dashoffset="12"
-                      stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M12 12l7 7M12 12l-7 -7M12 12l-7 7M12 12l7 -7">
-                    <animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="12;0" />
-                </path>
-            </svg>
-        </div>
-
-        <ul data-info="MENU ITEMS"
-            class="align-center my-0 w-fit items-center gap-x-4 rounded-[16px] border-[2px_solid_#C6AC8F44] bg-[#22333B]/80
-               p-0 transition-all group-has-checked:my-8 group-has-checked:-translate-x-2 group-has-checked:px-16
-               group-has-checked:py-2 **:text-[clamp(1rem,calc(2vw_+_0.1rem),1.3rem)] **:transition-all md:absolute
-               md:top-1/2
-               md:left-1/2
-               md:flex
-               md:-translate-1/2
-               md:bg-transparent
-               md:py-4
-               lg:gap-x-8
-               **:[line-height:4px]
-               **:has-[a]:grid
-               **:has-[a]:place-content-center
-               **:has-[a]:rounded-full
-               **:has-[a]:bg-transparent
-               **:has-[a]:px-0
-               **:has-[a]:py-0
-               **:has-[a]:group-has-checked:h-[2rem]
-               **:has-[a]:group-has-checked:px-4
-               **:has-[a]:group-has-checked:py-2">
-
-            <li>
-                <a asp-controller="Home" asp-action="Index" onClick="closeMenu()"
-                   class="h-0 cursor-pointer opacity-0 group-has-checked:opacity-100 md:opacity-100">
-                    Home
-                </a>
-            </li>
-
-            <li class="my-0 h-0 group-has-checked:my-4 group-has-checked:h-6 md:mx-2 md:h-2 md:group-has-checked:my-0">
-                <a asp-controller="Home" asp-action="About" onClick="closeMenu()"
-                   class="h-0 cursor-pointer opacity-0 group-has-checked:opacity-100 md:opacity-100">
-                    About Us
-                </a>
-            </li>
-
-            <li class="my-0 h-0 group-has-checked:my-4 group-has-checked:h-6 md:mx-2 md:h-2 md:group-has-checked:my-0">
-                <a asp-controller="Home" asp-action="Contact" onClick="closeMenu()"
-                   class="h-0 cursor-pointer opacity-0 group-has-checked:opacity-100 md:opacity-100">
-                    Contact
-                </a>
-            </li>
-        </ul>
-
-    </nav>
+    </div>
 
     <script>
-        function closeMenu() {
-          document.getElementById("navbar__control").checked = false;
+        function toggleMobileMenu() {
+            const drawer = document.getElementById("mobile-drawer");
+            const ham    = document.getElementById("hamburger");
+            const open   = drawer.classList.toggle("open");
+            ham.classList.toggle("open", open);
+            drawer.setAttribute("aria-hidden", !open);
+            document.body.style.overflow = open ? "hidden" : "";
         }
 
-        function closeMobileMenuOnResizeWindow() {
-          window.addEventListener("resize", () => {
-            if (window.innerWidth > 768) {
-              document.getElementById("navbar__control").checked = false;
-            }
-          })
+        function closeMobileMenu() {
+            const drawer = document.getElementById("mobile-drawer");
+            const ham    = document.getElementById("hamburger");
+            drawer.classList.remove("open");
+            ham.classList.remove("open");
+            drawer.setAttribute("aria-hidden", "true");
+            document.body.style.overflow = "";
         }
-        closeMobileMenuOnResizeWindow();
+
+        // Close on resize to desktop
+        window.addEventListener("resize", () => {
+            if (window.innerWidth >= 768) closeMobileMenu();
+        });
     </script>
+
     <main class="flex-grow">
         @RenderBody()
     </main>
-    <footer class="mt-12 bg-[#0A0908] py-6 text-[#C6AC8F]">
+
+    <footer class="bg-[#0A0908] py-6 text-[#C6AC8F]">
         <div class="mx-auto max-w-6xl text-center">
+            <p>Created by: Ranken AWD 1115 Graduating Class of 2024</p>
+            <p>Ana, Brody, Deshaun, Michael, Niah, Quinn</p>
             <p>&copy; @DateTime.Now.Year AutoGems.ai. All rights reserved.</p>
         </div>
     </footer>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
